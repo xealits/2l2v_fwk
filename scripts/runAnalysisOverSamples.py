@@ -222,7 +222,7 @@ for procBlock in procList :
                           LaunchOnCondor.Jobs_CRABDataset  = FileList[0]
                           LaunchOnCondor.Jobs_CRABcfgFile  = cfgfile
                           LaunchOnCondor.Jobs_CRABexe      = opt.theExecutable
-                          if(commands.getstatusoutput("whoami")[1]=='vischia'):
+                          if(commands.getstatusoutput("whoami")[1] in ['vischia', 'otoldaie']):
                               LaunchOnCondor.Jobs_CRABStorageSite = 'T2_PT_NCG_Lisbon'
                           else:
                               LaunchOnCondor.Jobs_CRABStorageSite = 'T2_BE_UCL'
