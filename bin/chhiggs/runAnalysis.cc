@@ -469,7 +469,7 @@ int main (int argc, char *argv[])
   h->GetXaxis()->SetBinLabel (7, "#geq 2 b-tags");
 
   // event selection - cross section
-  h = (TH1D*) mon.addHistogram (new TH1D ("chhiggseventflowdilep", ";;Events", 6, 0., 6.));
+  h = (TH1D*) mon.addHistogram (new TH1D ("xseceventflowdilep", ";;Events", 6, 0., 6.));
   h->GetXaxis()->SetBinLabel (1, "#geq 2 iso leptons");
   h->GetXaxis()->SetBinLabel (2, "M_{ll} veto");
   h->GetXaxis()->SetBinLabel (3, "#geq 2 jets");
@@ -643,7 +643,7 @@ int main (int argc, char *argv[])
       
       // lepton-tau
       mon.addHistogram(new TH1D("finaltaur"           +var, ";R^{#tau};Events",                    10,  0.,   1.   ));
-      mon.addHistogram(new TH1D("finaltaupolarization"+var, ";#eta^{#tau};Events",                 40, -1.,   3.   ));
+      mon.addHistogram(new TH1D("finaltaupolarization"+var, ";Y^{#tau};Events",                    40, -1.,   3.   ));
       mon.addHistogram(new TH1D("finaldphilepmet"     +var, ";#Delta#phi(#tau_{h}-#it{l});Events", 60,  0.  , 3.15 ));
       mon.addHistogram(new TH1D("finaldphitaumet"     +var, ";#Delta#phi(#tau_{h}-MET);Events",    60,  0.,   3.15 ));
       mon.addHistogram(new TH1D("finaldphileptau"     +var, ";#Delta#phi(#it{l}-#tau_{h});Events", 60,  0.,   3.15 ));
@@ -904,15 +904,12 @@ int main (int argc, char *argv[])
         // Need either to simulate the HLT (https://twiki.cern.ch/twiki/bin/view/CMS/TopTrigger#How_to_easily_emulate_HLT_paths) to match triggers.
         bool eTrigger    (
                           isMC ? 
-                          utils::passTriggerPatterns (tr, "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*")
+                          utils::passTriggerPatterns (tr, "HLT_Ele27_eta2p1_WP75_Gsf_v*")
                           :
-                          utils::passTriggerPatterns (tr, "HLT_Ele23_WPLoose_Gsf_v*")
+                          utils::passTriggerPatterns (tr, "HLT_Ele27_eta2p1_WPLoose_Gsf_v*")
                           );
         bool muTrigger   (
-                          isMC ? 
-                          utils::passTriggerPatterns (tr, "HLT_IsoMu17_eta2p1_v*")
-                          :
-                          utils::passTriggerPatterns (tr, "HLT_IsoMu18_v*")
+                          utils::passTriggerPatterns (tr, "HLT_IsoMu20_v*", "HLT_IsoTkMu20_v*")
                           );
 
         if(!isMC && muTrigger) mon.fillHisto("nvtx_singlemu_pileup", tags, nGoodPV, 1.);

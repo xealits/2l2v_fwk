@@ -396,35 +396,35 @@ namespace patUtils
       hasPhotonTrigger=true;
       triggerThreshold=250;
     }
-    else if( utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon165_R9Id90_*")){
+    else if( utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon165_R9Id90_HE10_IsoM_*")){
       hasPhotonTrigger=true;
      triggerThreshold=165;
     }
-    else if( utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon120_R9Id90_*")){ //HE10_Iso40_EBOnly_*")){
+    else if( utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon120_R9Id90_HE10_IsoM_*")){ //HE10_Iso40_EBOnly_*")){
       hasPhotonTrigger=true;
       triggerThreshold=120;
     }
-    else if( utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon90_R9Id90_*")){ // HE10_Iso40_EBOnly_*")){
+    else if( utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon90_R9Id90_HE10_IsoM_*")){ // HE10_Iso40_EBOnly_*")){
       hasPhotonTrigger=true;
       triggerThreshold=90;
     }
-    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon75_R9Id90_*")){ //HE10_Iso40_EBOnly_*")){
+    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon75_R9Id90_HE10_IsoM_*")){ //HE10_Iso40_EBOnly_*")){
       hasPhotonTrigger=true;
       triggerThreshold=75;
     }
-    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon50_R9Id90_*")){ //HE10_Iso40_EBOnly_*")){
+    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon50_R9Id90_HE10_IsoM_*")){ //HE10_Iso40_EBOnly_*")){
       hasPhotonTrigger=true;
       triggerThreshold=50;
     }
-    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon36_R9Id90_*")){ //HE10_Iso40_EBOnly_*")){
+    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon36_R9Id90_HE10_IsoM_*")){ //HE10_Iso40_EBOnly_*")){
       hasPhotonTrigger=true;
       triggerThreshold=36;
     }
-    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon30_R9Id90_*")){ //HE10_Iso40_EBOnly_*")){                       
+    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon30_R9Id90_HE10_IsoM_*")){ //HE10_Iso40_EBOnly_*")){                       
       hasPhotonTrigger=true;                                                                                                                     
       triggerThreshold=30;                                                                                                                       
     } 
-    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon22_R9Id90_*")){ //HE10_Iso40_EBOnly_*")){
+    else if(utils::passTriggerPatternsAndGetName(tr, successfulPath, "HLT_Photon22_R9Id90_HE10_IsoM_*")){ //HE10_Iso40_EBOnly_*")){
       hasPhotonTrigger=true;
       triggerThreshold=22;
     }
@@ -569,7 +569,9 @@ namespace patUtils
   bool passMetFilters(const fwlite::Event& ev, const bool& isPromptReco){
     bool passMetFilter(false);
 
+    // Legacy: the different collection name was necessary with the early 2015B prompt reco 
     edm::TriggerResultsByName metFilters = isPromptReco ? ev.triggerResultsByName("RECO") : ev.triggerResultsByName("PAT");
+    //edm::TriggerResultsByName metFilters = ev.triggerResultsByName("RECO");
     
     bool CSC(     utils::passTriggerPatterns(metFilters, "Flag_CSCTightHaloFilter")); 
     bool GoodVtx( utils::passTriggerPatterns(metFilters, "Flag_goodVertices"      ));
