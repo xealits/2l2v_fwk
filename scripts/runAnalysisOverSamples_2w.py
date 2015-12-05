@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os, sys
-from time import time()
+from time import time
 from os.path import isfile, getmtime, expanduser, expandvars
 import json
 import optparse
@@ -11,17 +11,6 @@ import UserCode.llvv_fwk.storeTools_cff as storeTools
 PROXYDIR = "~/x509_user_proxy"
 DatasetFileDB = "DAS"  #DEFAULT: will use das_client.py command line interface
 #DatasetFileDB = "DBS" #OPTION:  will use curl to parse https GET request on DBSserver
-
-def getByLabel(proc, key, defaultVal=None):
-    """getByLabel(proc, key, defaultVal=None)
-
-    Gets the value of a given item
-    (if not available a default value is returned)
-
-    (i.e. it works like the get method of Python's dict;
-      thus the function should be substituted everywhere with the get method)
-    """
-    return proc.get(key, defaultVal)
 
 initialCommand = ''
 def initProxy():
@@ -42,7 +31,6 @@ def initProxy():
 
 def getFileList(procData, DefaultNFilesPerJob):
     FileList = []
-    # miniAODSamples = getByLabel(procData, 'miniAOD', '') # TODO: use procData.get('miniAOD', '') everywhere
     miniAODSamples = procData.get('miniAOD', '')
     dset = procData.get('dset', '')
     isMINIAODDataset = ("/MINIAOD" in dset) or  ("amagitte" in dset)
@@ -83,7 +71,7 @@ def getFileList(procData, DefaultNFilesPerJob):
            print "Processing an unknown type of sample (assuming it's a private local sample): " + miniAODSamples
            site_list = storeTools.fillFromStore(miniAODSamples,0,-1,True)
 
-        site_list = storeTools.keepOnlyFilesFromGoodRun(site_list, getByLabel(procData,'lumiMask',''))       
+        site_list = storeTools.keepOnlyFilesFromGoodRun(site_list, procData.get('lumiMask', ''))       
         split = procData.get('split', -1)
         if split > 0:
            NFilesPerJob = max(1,len(site_list)/split)
@@ -163,13 +151,13 @@ for _, procBlock in procList.items():
     data = proc['data']
 
     for procData in data :
-        origdtag = procData('dtag')
+        origdtag = procData.get('dtag')
         if not origdtag: continue
         dtag = origdtag
-        xsec = procData('xsec', -1)
-        br = procData('br', [])
-        suffix = str(procData('suffix', ""))
-        split = procData('split', -1)
+        xsec = procData.get('xsec', -1)
+        br = procData.get('br', [])
+        suffix = str(procData.get('suffix', ""))
+        split = procData.get('split', -1)
         if opt.onlytag != 'all' and opt.onlytag not in dtag: continue
         filt = ''
         if mctruthmode != 0: filt = '_filt' + str(mctruthmode)      
@@ -178,7 +166,7 @@ for _, procBlock in procList.items():
         
         # not sure what opt.resubmit can be, but probably it can be changed to if not opt.resubmit:
         if opt.resubmit == False:
-            FileList = ['"' + procData('dset', 'UnknownDataset') + '"']
+            FileList = ['"' + procData.get('dset', 'UnknownDataset') + '"']
             LaunchOnCondor.SendCluster_Create(FarmDirectory, JobName + '_' + dtag)
             if LaunchOnCondor.subTool != 'crab': FileList = getFileList(procData, int(opt.NFile) )
            
@@ -215,7 +203,7 @@ for _, procBlock in procList.items():
                       #varopt = icfg.split('=')
                       #if len(varopt) < 2: continue
                       #sedcmd += 's%' + varopt[0] + '%' + varopt[1] + '%;'
-                    valid_options = [for icfg in opt.params.split(' ') if len(icfg.split('=')) > 1]
+                    valid_options = [icfg for icfg in opt.params.split(' ') if len(icfg.split('=')) > 1]
                     for varopt in valid_options:
                       sedcmd += 's%' + varopt[0] + '%' + varopt[1] + '%;'
                 sedcmd += '\''
@@ -242,7 +230,7 @@ for _, procBlock in procList.items():
                            LaunchOnCondor.Jobs_CRABUnitPerJob = int(opt.NFile)
                     LaunchOnCondor.SendCluster_Push(["BASH", initialCommand + str(opt.theExecutable + ' ' + cfgfile)])
            
-           LaunchOnCondor.SendCluster_Submit()
+            LaunchOnCondor.SendCluster_Submit()
         
         else:
            configList = commands.getstatusoutput('ls ' + opt.outdir +'/'+ dtag + suffix + '*_cfg.py')[1].split('\n')
