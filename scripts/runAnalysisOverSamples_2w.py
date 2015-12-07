@@ -71,7 +71,7 @@ def getFileList(procData, DefaultNFilesPerJob):
            print "Processing an unknown type of sample (assuming it's a private local sample): " + miniAODSamples
            site_list = storeTools.fillFromStore(miniAODSamples,0,-1,True)
 
-        site_list = storeTools.keepOnlyFilesFromGoodRun(site_list, procData.get('lumiMask', ''))       
+        site_list = storeTools.keepOnlyFilesFromGoodRun(site_list, procData.get('lumiMask', ''))
         split = procData.get('split', -1)
         if split > 0:
            NFilesPerJob = max(1,len(site_list)/split)
@@ -203,9 +203,9 @@ for _, procBlock in procList.items():
                       #varopt = icfg.split('=')
                       #if len(varopt) < 2: continue
                       #sedcmd += 's%' + varopt[0] + '%' + varopt[1] + '%;'
-                    valid_options = [icfg for icfg in opt.params.split(' ') if len(icfg.split('=')) > 1]
-                    for varopt in valid_options:
-                      sedcmd += 's%' + varopt[0] + '%' + varopt[1] + '%;'
+                    valid_options = [icfg.split('=') for icfg in opt.params.split(' ') if len(icfg.split('=')) > 1]
+                    for key, val in valid_options[:2]:
+                      sedcmd += 's%' + key + '%' + val + '%;'
                 sedcmd += '\''
                 cfgfile = prodfilepath + '_cfg.py'
                 os.system('cat ' + opt.cfg_file + ' | ' + sedcmd + ' > ' + cfgfile)
@@ -233,15 +233,15 @@ for _, procBlock in procList.items():
             LaunchOnCondor.SendCluster_Submit()
         
         else:
-           configList = commands.getstatusoutput('ls ' + opt.outdir +'/'+ dtag + suffix + '*_cfg.py')[1].split('\n')
-           failedList = [ cfgfile for cfgfile in configList
-                                  if not isfile(cfgfile.replace('_cfg.py','.root')) ]
+            configList = commands.getstatusoutput('ls ' + opt.outdir +'/'+ dtag + suffix + '*_cfg.py')[1].split('\n')
+            failedList = [ cfgfile for cfgfile in configList
+                                   if not isfile(cfgfile.replace('_cfg.py','.root')) ]
             
-           if failedList:
-              LaunchOnCondor.SendCluster_Create(FarmDirectory, JobName + '_' + dtag)
-              for cfgfile in failedList:                  
-                 LaunchOnCondor.SendCluster_Push(["BASH", initialCommand + str(opt.theExecutable + ' ' + cfgfile)])
-              LaunchOnCondor.SendCluster_Submit()
+            if failedList:
+                LaunchOnCondor.SendCluster_Create(FarmDirectory, JobName + '_' + dtag)
+                for cfgfile in failedList:                  
+                   LaunchOnCondor.SendCluster_Push(["BASH", initialCommand + str(opt.theExecutable + ' ' + cfgfile)])
+                LaunchOnCondor.SendCluster_Submit()
 
 
 if LaunchOnCondor.subTool == 'criminal':
