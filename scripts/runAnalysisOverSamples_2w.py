@@ -11,6 +11,7 @@ import UserCode.llvv_fwk.storeTools_cff as storeTools
 PROXYDIR = "~/x509_user_proxy"
 DatasetFileDB = "DAS"  #DEFAULT: will use das_client.py command line interface
 #DatasetFileDB = "DBS" #OPTION:  will use curl to parse https GET request on DBSserver
+initialCommand = ''
 
 def getFileList(procData, DefaultNFilesPerJob):
     FileList = []
@@ -108,7 +109,7 @@ LaunchOnCondor.Jobs_Queue          = opt.queue
 LaunchOnCondor.Jobs_LSFRequirement = '"'+opt.requirementtoBatch+'"'
 LaunchOnCondor.Jobs_EmailReport    = opt.report
 LaunchOnCondor.Jobs_InitCmds       = ['ulimit -c 0;']  #disable production of core dump in case of job crash
-LaunchOnCondor.Jobs_InitCmds      += [initialCommand]
+LaunchOnCondor.Jobs_InitCmds      += [initialCommand]  # TODO: it adds the initialCommand defined at the beginning of the script, do we need it?
 LaunchOnCondor.Jobs_LocalNJobs     = opt.localnfiles
 LaunchOnCondor.Jobs_CRABLFN        = opt.crablfn
 LaunchOnCondor.Jobs_ProxyDir       = FarmDirectory+"/inputs/" 
