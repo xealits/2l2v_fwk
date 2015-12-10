@@ -146,14 +146,15 @@ initialCommand = 'export X509_USER_PROXY=' + PROXYDIR + '/x509_proxy;voms-proxy-
 jsonFile = open(opt.samplesDB,'r')
 procList = json.load(jsonFile,encoding='utf-8')
 #run over sample
+#for proc in [proc for _, procBlock in procList.items() for proc in procBlock]
+# let's use traditional approach:
 for _, procBlock in procList.items():
   for proc in procBlock:
     if proc.get('interpollation'): continue #skip interpollated processes
     isdata = proc.get('isdata', False)
     mctruthmode = proc.get('mctruthmode', 0)
-    data = proc['data']
 
-    for procData in data :
+    for procData in proc['data']:
         origdtag = procData.get('dtag')
         if not origdtag: continue
         dtag = origdtag
@@ -167,8 +168,8 @@ for _, procBlock in procList.items():
         if xsec > 0 and not isdata:
             for ibr in br:  xsec = xsec*ibr
         
-        # not sure what opt.resubmit can be, but probably it can be changed to if not opt.resubmit:
-        if opt.resubmit == False:
+        # apparently opt.resubmit is boolean command-line option
+        if not opt.resubmit:
             FileList = ['"' + procData.get('dset', 'UnknownDataset') + '"']
             LaunchOnCondor.SendCluster_Create(FarmDirectory, JobName + '_' + dtag)
             if LaunchOnCondor.subTool != 'crab': FileList = getFileList(procData, int(opt.NFile) )
