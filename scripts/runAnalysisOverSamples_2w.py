@@ -203,22 +203,35 @@ for _, procBlock in procList.items():
                 #sedcmd += 's%@suffix%{}%;'      .format(suffix)
                 #sedcmd += 's%@lumiMask%"{}"%;'  .format(procData.get('lumiMask', ''))
                 # in the following one could use += if new parameters were to be appended at the end of the string
-                if '@useMVA' not in opt.params:          opt.params = '@useMVA=False ' + opt.params
-                if '@weightsFile' not in opt.params:     opt.params = '@weightsFile= ' + opt.params
-                if '@evStart' not in opt.params:         opt.params = '@evStart=0 '    + opt.params
-                if '@evEnd' not in opt.params:           opt.params = '@evEnd=-1 '     + opt.params
-                if '@saveSummaryTree' not in opt.params: opt.params = '@saveSummaryTree=False ' + opt.params
-                if '@runSystematics' not in opt.params:  opt.params = '@runSystematics=False '  + opt.params
-                if '@jacknife' not in opt.params:        opt.params = '@jacknife=-1 ' + opt.params
-                if '@jacks' not in opt.params:           opt.params = '@jacks=-1 '    + opt.params
-                if '@trig' not in opt.params:            opt.params = '@trig=False ' + opt.params
+                more_opt_parameters = {
+                    '@useMVA': '=False ',
+                    '@weightsFile': '= ',
+                    '@evStart': '=0 ',
+                    '@evEnd': '=-1 ',
+                    '@saveSummaryTree': '=False ',
+                    '@runSystematics': '=False ',
+                    '@jacknife': '=-1 ',
+                    '@jacks': '=-1 ',
+                    '@trig': '=False '}
+                for key, val in more_opt_parameters.items():
+                    if key not in opt.params: opt.params = key + val + opt.params
+                #if '@useMVA' not in opt.params:          opt.params = '@useMVA=False ' + opt.params
+                #if '@weightsFile' not in opt.params:     opt.params = '@weightsFile= ' + opt.params
+                #if '@evStart' not in opt.params:         opt.params = '@evStart=0 '    + opt.params
+                #if '@evEnd' not in opt.params:           opt.params = '@evEnd=-1 '     + opt.params
+                #if '@saveSummaryTree' not in opt.params: opt.params = '@saveSummaryTree=False ' + opt.params
+                #if '@runSystematics' not in opt.params:  opt.params = '@runSystematics=False '  + opt.params
+                #if '@jacknife' not in opt.params:        opt.params = '@jacknife=-1 ' + opt.params
+                #if '@jacks' not in opt.params:           opt.params = '@jacks=-1 '    + opt.params
+                #if '@trig' not in opt.params:            opt.params = '@trig=False ' + opt.params
+                # TODO it is really strange to check for opt.params here, but legacy:
                 if opt.params:
                     valid_options = [icfg.split('=') for icfg in opt.params.split(' ') if len(icfg.split('=')) > 1]
                     for key, val in valid_options[:2]:
                       config_parameters[key] = val
                       #sedcmd += 's%{}%{}%;'.format(key, val)
                 #sedcmd += '\''
-                cfgfile = prodfilepath + '_cfg.py'
+                #cfgfile = prodfilepath + '_cfg.py'
                 #os.system('cat ' + opt.cfg_file + ' | ' + sedcmd + ' > ' + cfgfile)
                 # so that's what sedcmd does!
                 # it just replaces bunch of strings in the file
