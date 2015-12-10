@@ -122,31 +122,28 @@ if "cern.ch" in hostname:    localTier = "T2_CH_CERN"
 
 
 initialCommand = ''
-def initProxy():
-    global initialCommand
-    validCertificate = True
-    # --voms cms, otherwise it does not work normally
-    voms_proxy_filename = expanduser(PROXYDIR + '/x509_proxy')
-    voms_proxy_timeleft_cmd = '(export X509_USER_PROXY='+PROXYDIR+'/x509_proxy; voms-proxy-init --voms cms --noregen; voms-proxy-info -all) | grep timeleft | tail -n 1'
-    voms_proxy_timeleft  = int(commands.getstatusoutput(voms_proxy_timeleft_cmd)[1].split(':')[2])
-    # TODO: checked the voms_proxy_timeleft_cmd output:
-    #     $ voms-proxy-info -all | grep timeleft | tail -n 1
-    #     timeleft  : 06:53:23
-    # -- so we check minutes?
-    # >>> getstatusoutput('voms-proxy-info -all | grep timeleft | tail -n 1')[1].split(':')
-    # ['timeleft  ', ' 06', '49', '56']
-    if not isfile(voms_proxy_filename) or time() - getmtime(voms_proxy_filename) > 600 or voms_proxy_timeleft < 8:
-        validCertificate = False
-    # TODO: now actually these two ifs can be merged
-    if not validCertificate:
-        # then let's renew it
-        print "You are going to run on a sample over grid using either CRAB or the AAA protocol, it is therefore needed to initialize your grid certificate"
-        voms = 'cms:/cms/becms' if "iihe.ac.be" in hostname else 'cms'
-        # calling the proxy init command:
-        os.system('mkdir -p '+PROXYDIR+'; voms-proxy-init --voms %s  -valid 192:00 --out '+PROXYDIR+'/x509_proxy' % (voms))
-        # TODO: use --out voms_proxy_filename instead?
-    initialCommand = 'export X509_USER_PROXY=' + PROXYDIR + '/x509_proxy;voms-proxy-init --voms cms --noregen; ' #no voms here, otherwise I (LQ) have issues
-initProxy()
+validCertificate = True
+# --voms cms, otherwise it does not work normally
+voms_proxy_filename = expanduser(PROXYDIR + '/x509_proxy')
+voms_proxy_timeleft_cmd = '(export X509_USER_PROXY='+PROXYDIR+'/x509_proxy; voms-proxy-init --voms cms --noregen; voms-proxy-info -all) | grep timeleft | tail -n 1'
+voms_proxy_timeleft  = int(commands.getstatusoutput(voms_proxy_timeleft_cmd)[1].split(':')[2])
+# TODO: checked the voms_proxy_timeleft_cmd output:
+#     $ voms-proxy-info -all | grep timeleft | tail -n 1
+#     timeleft  : 06:53:23
+# -- so we check minutes?
+# >>> getstatusoutput('voms-proxy-info -all | grep timeleft | tail -n 1')[1].split(':')
+# ['timeleft  ', ' 06', '49', '56']
+if not isfile(voms_proxy_filename) or time() - getmtime(voms_proxy_filename) > 600 or voms_proxy_timeleft < 8:
+    validCertificate = False
+# TODO: now actually these two ifs can be merged
+if not validCertificate:
+    # then let's renew it
+    print "You are going to run on a sample over grid using either CRAB or the AAA protocol, it is therefore needed to initialize your grid certificate"
+    voms = 'cms:/cms/becms' if "iihe.ac.be" in hostname else 'cms'
+    # calling the proxy init command:
+    os.system('mkdir -p '+PROXYDIR+'; voms-proxy-init --voms %s  -valid 192:00 --out '+PROXYDIR+'/x509_proxy' % (voms))
+    # TODO: use --out voms_proxy_filename instead?
+initialCommand = 'export X509_USER_PROXY=' + PROXYDIR + '/x509_proxy;voms-proxy-init --voms cms --noregen; ' #no voms here, otherwise I (LQ) have issues
 
 #open the file which describes the sample
 jsonFile = open(opt.samplesDB,'r')
