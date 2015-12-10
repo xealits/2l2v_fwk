@@ -181,16 +181,16 @@ for _, procBlock in procList.items():
                 sedcmd = 'sed \''
                 # maybe it is better to use _ or | as delimeter in sed's substitute
                 # then one can do %s insert into the string
-                sedcmd += 's%"@dtag"%"'     + dtag + '"%;'
-                sedcmd += 's%"@input"%'     + eventsFile + '%;'
-                sedcmd += 's%@outfile%'     + prodfilepath +'.root%;'
-                sedcmd += 's%@isMC%'        + str(not isdata) + '%;'
-                sedcmd += 's%@mctruthmode%' + str(mctruthmode) + '%;'
-                sedcmd += 's%@xsec%'        + str(xsec) + '%;'
-                sedcmd += 's%@cprime%'      + str(procData.get('cprime', -1)) + '%;'
-                sedcmd += 's%@brnew%'       + str(procData.get('brnew',  -1)) + '%;'
-                sedcmd += 's%@suffix%'      + suffix + '%;'
-                sedcmd += 's%@lumiMask%"'   + procData.get('lumiMask', '') + '"%;'
+                sedcmd += 's%"@dtag"%"{}"%;'    .format(dtag)
+                sedcmd += 's%"@input"%{}%;'     .format(eventsFile)
+                sedcmd += 's%@outfile%{}.root%;'.format(prodfilepath)
+                sedcmd += 's%@isMC%{}%;'        .format(str(not isdata))
+                sedcmd += 's%@mctruthmode%{}%;' .format(str(mctruthmode))
+                sedcmd += 's%@xsec%{}%;'        .format(str(xsec))
+                sedcmd += 's%@cprime%{}%;'      .format(str(procData.get('cprime', -1)))
+                sedcmd += 's%@brnew%{}%;'       .format(str(procData.get('brnew',  -1)))
+                sedcmd += 's%@suffix%{}%;'      .format(suffix)
+                sedcmd += 's%@lumiMask%"{}"%;'  .format(procData.get('lumiMask', ''))
                 if '@useMVA' not in opt.params:          opt.params = '@useMVA=False ' + opt.params
                 if '@weightsFile' not in opt.params:     opt.params = '@weightsFile= ' + opt.params
                 if '@evStart' not in opt.params:         opt.params = '@evStart=0 '    + opt.params
@@ -201,15 +201,9 @@ for _, procBlock in procList.items():
                 if '@jacks' not in opt.params:           opt.params = '@jacks=-1 '    + opt.params
                 if '@trig' not in opt.params:            opt.params = '@trig=False ' + opt.params
                 if opt.params:
-                    # if only pairs are valid then one could:
-                    #for a, b in [for icfg in opt.params.split(' ') if len(icfg.split('=')) == 2]:
-                    #for icfg in opt.params.split(' '):
-                      #varopt = icfg.split('=')
-                      #if len(varopt) < 2: continue
-                      #sedcmd += 's%' + varopt[0] + '%' + varopt[1] + '%;'
                     valid_options = [icfg.split('=') for icfg in opt.params.split(' ') if len(icfg.split('=')) > 1]
                     for key, val in valid_options[:2]:
-                      sedcmd += 's%' + key + '%' + val + '%;'
+                      sedcmd += 's%{}%{}%;'.format(key, val)
                 sedcmd += '\''
                 cfgfile = prodfilepath + '_cfg.py'
                 os.system('cat ' + opt.cfg_file + ' | ' + sedcmd + ' > ' + cfgfile)
