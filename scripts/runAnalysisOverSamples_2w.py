@@ -125,20 +125,24 @@ if "cern.ch" in hostname:    localTier = "T2_CH_CERN"
 # checking if the proxy needs renewal
 voms_proxy_filename = expanduser(PROXYDIR + '/x509_proxy')
 # --voms cms, otherwise it does not work normally
-voms_proxy_timeleft_cmd = '(export X509_USER_PROXY='+PROXYDIR+'/x509_proxy; voms-proxy-init --voms cms --noregen; voms-proxy-info -all) | grep timeleft | tail -n 1'
-voms_proxy_timeleft  = int(commands.getstatusoutput(voms_proxy_timeleft_cmd)[1].split(':')[2])
+voms_proxy_timeleft_cmdline = '(export X509_USER_PROXY='+PROXYDIR+'/x509_proxy; voms-proxy-init --voms cms --noregen; voms-proxy-info -all) | grep timeleft | tail -n 1'
+#print("voms_proxy timeleft cmd: ", voms_proxy_timeleft_cmd)
+#print("getstatusoutput: ", commands.getstatusoutput(voms_proxy_timeleft_cmd))
+voms_proxy_timeleft_cmd  = lambda: int(commands.getstatusoutput(voms_proxy_timeleft_cmdline)[1].split(':')[2])
 # TODO: checked the voms_proxy_timeleft_cmd output:
 #     $ voms-proxy-info -all | grep timeleft | tail -n 1
 #     timeleft  : 06:53:23
 # -- so we check minutes?
 # >>> getstatusoutput('voms-proxy-info -all | grep timeleft | tail -n 1')[1].split(':')
 # ['timeleft  ', ' 06', '49', '56']
-if not isfile(voms_proxy_filename) or time() - getmtime(voms_proxy_filename) > 600 or voms_proxy_timeleft < 8:
+#if not isfile(voms_proxy_filename) or time() - getmtime(voms_proxy_filename) > 600 or voms_proxy_timeleft < 8:
+#if not isfile(voms_proxy_filename) or time() - getmtime(voms_proxy_filename) > 600 or int(commands.getstatusoutput(voms_proxy_timeleft_cmd)[1].split(':')[2]) < 8:
+if not isfile(voms_proxy_filename) or time() - getmtime(voms_proxy_filename) > 600 or voms_proxy_timeleft_cmd() < 8:
     # then let's renew the proxy
     print "You are going to run on a sample over grid using either CRAB or the AAA protocol, it is therefore needed to initialize your grid certificate"
     voms = 'cms:/cms/becms' if "iihe.ac.be" in hostname else 'cms'
     # calling the proxy init command:
-    os.system('mkdir -p '+PROXYDIR+'; voms-proxy-init --voms %s  -valid 192:00 --out '+PROXYDIR+'/x509_proxy' % (voms))
+    os.system('mkdir -p {}; voms-proxy-init --voms {}  -valid 192:00 --out {}/x509_proxy'.format(PROXYDIR, voms, PROXYDIR))
     # TODO: use --out voms_proxy_filename instead?
 initialCommand = 'export X509_USER_PROXY=' + PROXYDIR + '/x509_proxy;voms-proxy-init --voms cms --noregen; ' #no voms here, otherwise I (LQ) have issues
 
@@ -199,7 +203,7 @@ for _, procBlock in procList.items():
                     '@jacknife': '=-1 ',
                     '@jacks': '=-1 ',
                     '@trig': '=False '}
-                for key, val in more_opt_parameters.items():
+                for key, val in default_opt_parameters.items():
                     if key not in opt.params: opt.params = key + val + opt.params
                 # TODO it is really strange to check for opt.params here, but legacy:
                 if opt.params:
