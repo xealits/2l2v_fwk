@@ -178,19 +178,31 @@ for _, procBlock in procList.items():
                 #create the cfg file
                 eventsFile = eventsFile.replace('?svcClass=default', '')
                 prodfilepath=opt.outdir +'/'+ dtag + suffix + '_' + str(s) + filt
-                sedcmd = 'sed \''
+                #sedcmd = 'sed \''
                 # maybe it is better to use _ or | as delimeter in sed's substitute
                 # then one can do %s insert into the string
-                sedcmd += 's%"@dtag"%"{}"%;'    .format(dtag)
-                sedcmd += 's%"@input"%{}%;'     .format(eventsFile)
-                sedcmd += 's%@outfile%{}.root%;'.format(prodfilepath)
-                sedcmd += 's%@isMC%{}%;'        .format(str(not isdata))
-                sedcmd += 's%@mctruthmode%{}%;' .format(str(mctruthmode))
-                sedcmd += 's%@xsec%{}%;'        .format(str(xsec))
-                sedcmd += 's%@cprime%{}%;'      .format(str(procData.get('cprime', -1)))
-                sedcmd += 's%@brnew%{}%;'       .format(str(procData.get('brnew',  -1)))
-                sedcmd += 's%@suffix%{}%;'      .format(suffix)
-                sedcmd += 's%@lumiMask%"{}"%;'  .format(procData.get('lumiMask', ''))
+                config_parameters = {
+                    '"@dtag"':     '"{}"'.format(dtag),
+                    '"@input"':    '"{}"'.format(eventsFile),
+                    '@outfile':     '{}.root'.format(prodfilepath),
+                    '@isMC':        '{}'.format(str(not isdata)),
+                    '@mctruthmode': '{}'.format(str(mctruthmode)),
+                    '@xsec':        '{}'.format(str(xsec)),
+                    '@cprime':      '{}'.format(str(procData.get('cprime', -1))),
+                    '@brnew':       '{}'.format(str(procData.get('brnew',  -1))),
+                    '@suffix':      '{}'.format(suffix),
+                    '@lumiMask':   '"{}"'.format(procData.get('lumiMask', ''))}
+                #sedcmd += 's%"@dtag"%"{}"%;'    .format(dtag)
+                #sedcmd += 's%"@input"%{}%;'     .format(eventsFile)
+                #sedcmd += 's%@outfile%{}.root%;'.format(prodfilepath)
+                #sedcmd += 's%@isMC%{}%;'        .format(str(not isdata))
+                #sedcmd += 's%@mctruthmode%{}%;' .format(str(mctruthmode))
+                #sedcmd += 's%@xsec%{}%;'        .format(str(xsec))
+                #sedcmd += 's%@cprime%{}%;'      .format(str(procData.get('cprime', -1)))
+                #sedcmd += 's%@brnew%{}%;'       .format(str(procData.get('brnew',  -1)))
+                #sedcmd += 's%@suffix%{}%;'      .format(suffix)
+                #sedcmd += 's%@lumiMask%"{}"%;'  .format(procData.get('lumiMask', ''))
+                # in the following one could use += if new parameters were to be appended at the end of the string
                 if '@useMVA' not in opt.params:          opt.params = '@useMVA=False ' + opt.params
                 if '@weightsFile' not in opt.params:     opt.params = '@weightsFile= ' + opt.params
                 if '@evStart' not in opt.params:         opt.params = '@evStart=0 '    + opt.params
@@ -203,10 +215,19 @@ for _, procBlock in procList.items():
                 if opt.params:
                     valid_options = [icfg.split('=') for icfg in opt.params.split(' ') if len(icfg.split('=')) > 1]
                     for key, val in valid_options[:2]:
-                      sedcmd += 's%{}%{}%;'.format(key, val)
-                sedcmd += '\''
+                      config_parameters[key] = val
+                      #sedcmd += 's%{}%{}%;'.format(key, val)
+                #sedcmd += '\''
                 cfgfile = prodfilepath + '_cfg.py'
-                os.system('cat ' + opt.cfg_file + ' | ' + sedcmd + ' > ' + cfgfile)
+                #os.system('cat ' + opt.cfg_file + ' | ' + sedcmd + ' > ' + cfgfile)
+                # so that's what sedcmd does!
+                # it just replaces bunch of strings in the file
+                # DANGER ZONE: defining 2 things in with is available since Python 2.7 (which is indeed installed on lxplus in 10-12-2015)
+                with open(prodfilepath + '_cfg.py', 'w') as o, open(opt.cfg_file, 'r') as i:
+                    template = i.read()
+                    for key, val in config_parameters.items():
+                      template.replace(key, val)
+                    o.write(template)
                 
                 #run the job
                 if not opt.queue:
