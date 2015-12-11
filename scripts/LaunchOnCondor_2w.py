@@ -491,12 +491,14 @@ def ListToString(InputList):
     return "".join(InputList)
 
 def ListToFile(InputList, outputFile):
-    out_file = open(outputFile,'w')
+    #out_file = open(outputFile,'w')
     #for i in range(len(InputList)):
        #out_file.write('     ' + InputList[i] + '\n')
-    for i in InputList:
-        out_file.write('     ' + i + '\n')
-    out_file.close()
+    #for i in InputList:
+        #out_file.write('     ' + i + '\n')
+    #out_file.close()
+    with open(outputFile, 'w') as out_file:
+        out_file.writelines(('     ' + i + '\n' for i in InputList))
 
 def FileToList(path):
    input_file  = open(path,'r')
@@ -508,6 +510,31 @@ def FileToList(path):
 
 
 
+def_pycfg_file_text = '''
+import FWCore.ParameterSet.Config as cms
+process = cms.Process("Merge")
+
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.load("FWCore.MessageService.MessageLogger_cfi")
+
+process.MessageLogger.cerr.FwkReport.reportEvery = 50000
+process.source = cms.Source("PoolSource",
+   skipBadFiles = cms.untracked.bool(True),
+   duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
+   fileNames = cms.untracked.vstring(
+   )
+)
+
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+{}
+process.OUT = cms.OutputModule( "PoolOutputModule",
+    outputCommands = cms.untracked.vstring({}),
+    eventAutoFlushCompressedSize=cms.untracked.int32(15*1024*1024),
+    fileName = cms.untracked.string({})
+)
+
+process.endPath = cms.EndPath(process.OUT)
+'''
 
 
 def SendCMSMergeJob(FarmDirectory, JobName, InputFiles, OutputFile, KeepStatement):
@@ -524,31 +551,33 @@ def SendCMSMergeJob(FarmDirectory, JobName, InputFiles, OutputFile, KeepStatemen
         InputFilesString += "process.source.fileNames.extend([" + i.replace(',',' ') + '])\n'
     
     
-    cfg_file=open(Temp_Cfg,'w')
-    cfg_file.write('import FWCore.ParameterSet.Config as cms\n')
-    cfg_file.write('process = cms.Process("Merge")\n')
-    cfg_file.write('\n')
-    cfg_file.write('process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )\n')
-    cfg_file.write('process.load("FWCore.MessageService.MessageLogger_cfi")\n')
-    cfg_file.write('\n')
-    cfg_file.write('process.MessageLogger.cerr.FwkReport.reportEvery = 50000\n')
-    cfg_file.write('process.source = cms.Source("PoolSource",\n')
-    cfg_file.write('   skipBadFiles = cms.untracked.bool(True),\n')
-    cfg_file.write('   duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),\n')
-    cfg_file.write('   fileNames = cms.untracked.vstring(\n')
-    cfg_file.write('   )\n')
-    cfg_file.write(')\n')
-    cfg_file.write('\n')
-    #cfg_file.write('process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )\n')
-    cfg_file.write('%s\n' % InputFilesString)
-    cfg_file.write('process.OUT = cms.OutputModule("PoolOutputModule",\n')
-    cfg_file.write('    outputCommands = cms.untracked.vstring(%s),\n' % KeepStatement)
-    cfg_file.write('    eventAutoFlushCompressedSize=cms.untracked.int32(15*1024*1024),\n')
-    cfg_file.write('    fileName = cms.untracked.string(%s)\n' % OutputFile)
-    cfg_file.write(')\n')
-    cfg_file.write('\n')
-    cfg_file.write('process.endPath = cms.EndPath(process.OUT)\n')
-    cfg_file.close()
+    #cfg_file=open(Temp_Cfg,'w')
+    #cfg_file.write('import FWCore.ParameterSet.Config as cms\n')
+    #cfg_file.write('process = cms.Process("Merge")\n')
+    #cfg_file.write('\n')
+    #cfg_file.write('process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )\n')
+    #cfg_file.write('process.load("FWCore.MessageService.MessageLogger_cfi")\n')
+    #cfg_file.write('\n')
+    #cfg_file.write('process.MessageLogger.cerr.FwkReport.reportEvery = 50000\n')
+    #cfg_file.write('process.source = cms.Source("PoolSource",\n')
+    #cfg_file.write('   skipBadFiles = cms.untracked.bool(True),\n')
+    #cfg_file.write('   duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),\n')
+    #cfg_file.write('   fileNames = cms.untracked.vstring(\n')
+    #cfg_file.write('   )\n')
+    #cfg_file.write(')\n')
+    #cfg_file.write('\n')
+    ##cfg_file.write('process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )\n')
+    #cfg_file.write('%s\n' % InputFilesString)
+    #cfg_file.write('process.OUT = cms.OutputModule("PoolOutputModule",\n')
+    #cfg_file.write('    outputCommands = cms.untracked.vstring(%s),\n' % KeepStatement)
+    #cfg_file.write('    eventAutoFlushCompressedSize=cms.untracked.int32(15*1024*1024),\n')
+    #cfg_file.write('    fileName = cms.untracked.string(%s)\n' % OutputFile)
+    #cfg_file.write(')\n')
+    #cfg_file.write('\n')
+    #cfg_file.write('process.endPath = cms.EndPath(process.OUT)\n')
+    #cfg_file.close()
+    with open(Temp_Cfg,'w') as cfg_file:
+        cfg_file.write(def_pycfg_file_text.format(InputFilesString, KeepStatement, OutputFile))
     SendCluster_Push  (["CMSSW", Temp_Cfg])
     SendCluster_Submit()
     os.system('rm '+ Temp_Cfg)
