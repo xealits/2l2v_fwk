@@ -360,7 +360,7 @@ def SendCluster_LoadInputFiles(path, NJobs):
         input_lines = input_file.readlines()
 
     BlockSize = len(input_lines)/NJobs
-    LineIndex  = 0
+    #LineIndex  = 0
     JobIndex   = 0
     BlockIndex = 0
     Jobs_Inputs = [""]
@@ -431,22 +431,6 @@ def ShellRun(InputFileName):
 
 def SendCluster_Submit():
     '''SendCluster_Submit()
-
-    previous version:
-
-        global subTool
-        global CopyRights
-        global Jobs_Count
-        global Path_Cmd
-        global Jobs_List
-  
-        if subTool=='bsub' or subTool=='qsub': os.system("sh " + Path_Cmd)
-        elif subTool=='crab':                  os.system("sh " + Path_Cmd)
-        elif subTool=='criminal':              print "Added jobs to global list"
-        else:                                  os.system("condor_submit " + Path_Cmd)
-          
-        print '\n'+CopyRights
-        print '%i Job(s) has/have been submitted on the Computing Cluster' % Jobs_Count
     '''
     if subTool in ('bsub', 'qsub', 'crab'): os.system("sh " + Path_Cmd)
     elif subTool=='criminal':               print "Added jobs to global list"
