@@ -343,84 +343,85 @@ def AddJobToCmdFile():
         cmd_file.close()
 
 def CreateDirectoryStructure(FarmDirectory):
-        global Jobs_Name
-        global Farm_Directories
-	Farm_Directories = [FarmDirectory+'/', FarmDirectory+'/inputs/', FarmDirectory+'/logs/', FarmDirectory+'/outputs/']
-        for i in range(0,len(Farm_Directories)):
-		if os.path.isdir(Farm_Directories[i]) == False:
-	        	os.system('mkdir -p ' + Farm_Directories[i])
+    global Jobs_Name
+    global Farm_Directories
+    Farm_Directories = [FarmDirectory+'/', FarmDirectory+'/inputs/', FarmDirectory+'/logs/', FarmDirectory+'/outputs/']
+    for d in Farm_Directories:
+        if not os.path.isdir(d):
+            os.system('mkdir -p ' + d)
 
 def SendCluster_LoadInputFiles(path, NJobs):
-        global Jobs_Inputs
-	input_file  = open(path,'r')
-	input_lines = input_file.readlines()
-	input_file.close()
-	#input_lines.sort()
-	
-	BlockSize = (len(input_lines)/NJobs)
-	LineIndex  = 0
-	JobIndex   = 0
-	BlockIndex = 0	
-	Jobs_Inputs = [""]
-	while LineIndex < len(input_lines):
-		Jobs_Inputs[JobIndex] += input_lines[LineIndex]
-		LineIndex +=1
-		BlockIndex+=1
-		if BlockIndex>BlockSize:
-			BlockIndex = 0
-			JobIndex  += 1
-			Jobs_Inputs.append("")
-	return JobIndex+1
+    global Jobs_Inputs
+    input_file  = open(path,'r')
+    input_lines = input_file.readlines()
+    input_file.close()
+    #input_lines.sort()
+
+    BlockSize = (len(input_lines)/NJobs)
+    LineIndex  = 0
+    JobIndex   = 0
+    BlockIndex = 0
+    Jobs_Inputs = [""]
+    while LineIndex < len(input_lines):
+        Jobs_Inputs[JobIndex] += input_lines[LineIndex]
+        LineIndex +=1
+        BlockIndex+=1
+        if BlockIndex>BlockSize:
+            BlockIndex = 0
+            JobIndex  += 1
+            Jobs_Inputs.append("")
+    return JobIndex+1
 
 
 def SendCluster_Create(FarmDirectory, JobName):
-	global subTool
-	global Jobs_Name
-	global Jobs_Count
-        global Farm_Directories
+    global subTool
+    global Jobs_Name
+    global Jobs_Count
+    global Farm_Directories
 
-	#determine what is the submission system available, or use condor
-        if(subTool==''):
-           qbatchTestCommand="qsub"
-           if( commands.getstatusoutput("ls /gstore/t3cms" )[1].find("store")==0): qbatchTestCommand="qstat"
+    #determine what is the submission system available, or use condor
+    # TODO: check if indentation is correct
+    if(subTool==''):
+        # TODO: check -- the inline if expression is available since 2.5 Python
+        qbatchTestCommand = "qstat" if commands.getstatusoutput("ls /gstore/t3cms" )[1].find("store")==0 else "qsub"
 
-  	   if(  commands.getstatusoutput("bjobs"          )[1].find("command not found")<0): subTool = 'bsub'
-           elif(commands.getstatusoutput(qbatchTestCommand)[1].find("command not found")<0): subTool = 'qsub'
-           else:                                                                         subTool = 'condor'
-        if(Jobs_Queue.find('crab')>=0):                                                  subTool = 'crab'
-        if(Jobs_Queue.find('criminal')>=0):                                              subTool = 'criminal'
-	Jobs_Name  = JobName
-	Jobs_Count = 0
+        if   "command not found" not in commands.getstatusoutput("bjobs"          )[1]: subTool = 'bsub'
+        elif "command not found" not in commands.getstatusoutput(qbatchTestCommand)[1]: subTool = 'qsub'
+        else:                                                                         subTool = 'condor'
+    if 'crab' in Jobs_Queue:                                                  subTool = 'crab'
+    if 'criminal' in Jobs_Queue:                                              subTool = 'criminal'
+    Jobs_Name  = JobName
+    Jobs_Count = 0
 
-        CreateDirectoryStructure(FarmDirectory)
-        CreateTheCmdFile()
+    CreateDirectoryStructure(FarmDirectory)
+    CreateTheCmdFile()
 
 def SendCluster_Push(Argv):
-        global Farm_Directories
-        global Jobs_Count
-        global Jobs_Index
-	global Path_Shell
-	global Path_Log
+    global Farm_Directories
+    global Jobs_Count
+    global Jobs_Index
+    global Path_Shell
+    global Path_Log
 
-	Jobs_Index = "%04i_" % Jobs_Count
-        if Jobs_Count==0 and (Argv[0]=="ROOT" or Argv[0]=="FWLITE"):                
-                #First Need to Compile the macro --> Create a temporary shell path with no arguments
-                print "Compiling the Macro..."
-                CreateTheShellFile([Argv[0],Argv[1]])
-                os.system('sh '+Path_Shell)
-                os.system('rm '+Path_Shell)
-		print "Getting the jobs..."
-	print Argv
-        CreateTheShellFile(Argv)
-        AddJobToCmdFile()
-	Jobs_Count = Jobs_Count+1
+    Jobs_Index = "%04i_" % Jobs_Count
+    if Jobs_Count==0 and (Argv[0]=="ROOT" or Argv[0]=="FWLITE"):                
+        #First Need to Compile the macro --> Create a temporary shell path with no arguments
+        print "Compiling the Macro..."
+        CreateTheShellFile([Argv[0],Argv[1]])
+        os.system('sh '+Path_Shell)
+        os.system('rm '+Path_Shell)
+        print "Getting the jobs..."
+    print Argv
+    CreateTheShellFile(Argv)
+    AddJobToCmdFile()
+    Jobs_Count = Jobs_Count+1
 
 def ShellRun(InputFileName):
     try:
         return os.system('sh ' + InputFileName)
     except:
         print 50*'<'
-        print "  Problem  (%s) with %s continuing without"%(sys.exc_info()[1],InputFileName)
+        print "  Problem  (%s) with %s continuing without" % (sys.exc_info()[1], InputFileName)
         print 50*'<'
         return False
 
