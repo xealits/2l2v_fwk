@@ -434,8 +434,7 @@ def SendCluster_Submit():
     '''
     if subTool in ('bsub', 'qsub', 'crab'): os.system("sh " + Path_Cmd)
     elif subTool=='criminal':               print "Added jobs to global list"
-    else:                  	                os.system("condor_submit " + Path_Cmd)
-        
+    else:                                   os.system("condor_submit " + Path_Cmd)
     print '\n' + CopyRights
     print '%i Job(s) has/have been submitted on the Computing Cluster' % Jobs_Count
 
@@ -448,13 +447,13 @@ def SendCluster_CriminalSubmit():
 def SendSingleJob(FarmDirectory, JobName, Argv):
     SendCluster_Create(FarmDirectory, JobName, Argv)
     SendCluster_Push(FarmDirectory, JobName, Argv)
-    SendCluster_Submit(FarmDirectory, JobName,Argv)
+    SendCluster_Submit(FarmDirectory, JobName, Argv)
 
 def SendCMSJobs(FarmDirectory, JobName, ConfigFile, InputFiles, NJobs, Argv):
     SendCluster_Create(FarmDirectory, JobName)
     NJobs = SendCluster_LoadInputFiles(InputFiles, NJobs)
     for i in range(NJobs):
-        SendCluster_Push  (["CMSSW", ConfigFile])
+        SendCluster_Push(["CMSSW", ConfigFile])
     SendCluster_Submit()
 
 
@@ -484,16 +483,20 @@ def GetListOfFiles(Prefix, InputPattern, Suffix):
 
 
 def ListToString(InputList):
-   outString = ""
-   for i in range(len(InputList)):
-      outString += InputList[i]
-   return outString
+    #outString = ""
+    #for i in range(len(InputList)):
+       #outString += InputList[i]
+    #for i in InputList:
+       #outString += i
+    return "".join(InputList)
 
 def ListToFile(InputList, outputFile):
-   out_file=open(outputFile,'w')
-   for i in range(len(InputList)):
-      out_file.write('     ' + InputList[i] + '\n')
-   out_file.close()
+    out_file = open(outputFile,'w')
+    #for i in range(len(InputList)):
+       #out_file.write('     ' + InputList[i] + '\n')
+    for i in InputList:
+        out_file.write('     ' + i + '\n')
+    out_file.close()
 
 def FileToList(path):
    input_file  = open(path,'r')
