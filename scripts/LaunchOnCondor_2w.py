@@ -352,32 +352,36 @@ def CreateDirectoryStructure(FarmDirectory):
 
 def SendCluster_LoadInputFiles(path, NJobs):
     global Jobs_Inputs
-    input_file  = open(path,'r')
-    input_lines = input_file.readlines()
-    input_file.close()
+    #input_file  = open(path,'r')
+    #input_lines = input_file.readlines()
+    #input_file.close()
     #input_lines.sort()
+    with open(path,'r') as input_file:
+        input_lines = input_file.readlines()
 
-    BlockSize = (len(input_lines)/NJobs)
+    BlockSize = len(input_lines)/NJobs
     LineIndex  = 0
     JobIndex   = 0
     BlockIndex = 0
     Jobs_Inputs = [""]
-    while LineIndex < len(input_lines):
-        Jobs_Inputs[JobIndex] += input_lines[LineIndex]
-        LineIndex +=1
+    #while LineIndex < len(input_lines):
+    for input_line in input_lines:
+        #Jobs_Inputs[JobIndex] += input_lines[LineIndex]
+        Jobs_Inputs[JobIndex] += input_line
+        #LineIndex +=1
         BlockIndex+=1
-        if BlockIndex>BlockSize:
+        if BlockIndex > BlockSize:
             BlockIndex = 0
             JobIndex  += 1
             Jobs_Inputs.append("")
-    return JobIndex+1
+    return JobIndex + 1
 
 
 def SendCluster_Create(FarmDirectory, JobName):
     global subTool
     global Jobs_Name
     global Jobs_Count
-    global Farm_Directories
+    #global Farm_Directories
 
     #determine what is the submission system available, or use condor
     # TODO: check if indentation is correct
@@ -397,24 +401,24 @@ def SendCluster_Create(FarmDirectory, JobName):
     CreateTheCmdFile()
 
 def SendCluster_Push(Argv):
-    global Farm_Directories
+    #global Farm_Directories
     global Jobs_Count
     global Jobs_Index
-    global Path_Shell
-    global Path_Log
+    #global Path_Shell
+    #global Path_Log
 
     Jobs_Index = "%04i_" % Jobs_Count
-    if Jobs_Count==0 and (Argv[0]=="ROOT" or Argv[0]=="FWLITE"):
+    if Jobs_Count==0 and Argv[0] in ("ROOT", "FWLITE"):
         #First Need to Compile the macro --> Create a temporary shell path with no arguments
         print "Compiling the Macro..."
         CreateTheShellFile([Argv[0],Argv[1]])
-        os.system('sh '+Path_Shell)
-        os.system('rm '+Path_Shell)
+        os.system('sh ' + Path_Shell)
+        os.system('rm ' + Path_Shell)
         print "Getting the jobs..."
     print Argv
     CreateTheShellFile(Argv)
     AddJobToCmdFile()
-    Jobs_Count = Jobs_Count+1
+    Jobs_Count = Jobs_Count + 1
 
 def ShellRun(InputFileName):
     try:
