@@ -539,43 +539,19 @@ process.endPath = cms.EndPath(process.OUT)
 
 def SendCMSMergeJob(FarmDirectory, JobName, InputFiles, OutputFile, KeepStatement):
     SendCluster_Create(FarmDirectory, JobName)
-    Temp_Cfg   = Farm_Directories[1]+Jobs_Index+Jobs_Name+'_TEMP_cfg.py'
+    Temp_Cfg   = Farm_Directories[1] + Jobs_Index + Jobs_Name + '_TEMP_cfg.py'
     
-    if len(InputFiles)==0:
+    #if len(InputFiles)==0:
+    if not InputFiles:
         print 'Empty InputFile List for Job named "%s", Job will not be submitted' % JobName
         return
     
-    InputFilesString = ''
-    InputFiles = natural_sort(InputFiles)
-    for i in InputFiles:
-        InputFilesString += "process.source.fileNames.extend([" + i.replace(',',' ') + '])\n'
-    
-    
-    #cfg_file=open(Temp_Cfg,'w')
-    #cfg_file.write('import FWCore.ParameterSet.Config as cms\n')
-    #cfg_file.write('process = cms.Process("Merge")\n')
-    #cfg_file.write('\n')
-    #cfg_file.write('process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )\n')
-    #cfg_file.write('process.load("FWCore.MessageService.MessageLogger_cfi")\n')
-    #cfg_file.write('\n')
-    #cfg_file.write('process.MessageLogger.cerr.FwkReport.reportEvery = 50000\n')
-    #cfg_file.write('process.source = cms.Source("PoolSource",\n')
-    #cfg_file.write('   skipBadFiles = cms.untracked.bool(True),\n')
-    #cfg_file.write('   duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),\n')
-    #cfg_file.write('   fileNames = cms.untracked.vstring(\n')
-    #cfg_file.write('   )\n')
-    #cfg_file.write(')\n')
-    #cfg_file.write('\n')
-    ##cfg_file.write('process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )\n')
-    #cfg_file.write('%s\n' % InputFilesString)
-    #cfg_file.write('process.OUT = cms.OutputModule("PoolOutputModule",\n')
-    #cfg_file.write('    outputCommands = cms.untracked.vstring(%s),\n' % KeepStatement)
-    #cfg_file.write('    eventAutoFlushCompressedSize=cms.untracked.int32(15*1024*1024),\n')
-    #cfg_file.write('    fileName = cms.untracked.string(%s)\n' % OutputFile)
-    #cfg_file.write(')\n')
-    #cfg_file.write('\n')
-    #cfg_file.write('process.endPath = cms.EndPath(process.OUT)\n')
-    #cfg_file.close()
+    #InputFilesString = ''
+    #InputFiles = natural_sort(InputFiles)
+    #for i in InputFiles:
+        #InputFilesString += "process.source.fileNames.extend([" + i.replace(',',' ') + '])\n'
+    InputFilesString = ''.join(("process.source.fileNames.extend([" + i.replace(',',' ') + '])\n' for i in natural_sort(InputFiles)))
+
     with open(Temp_Cfg,'w') as cfg_file:
         cfg_file.write(def_pycfg_file_text.format(InputFilesString, KeepStatement, OutputFile))
     SendCluster_Push  (["CMSSW", Temp_Cfg])
