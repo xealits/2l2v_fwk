@@ -433,7 +433,7 @@ def SendCluster_Submit():
     '''SendCluster_Submit()
     '''
     if subTool in ('bsub', 'qsub', 'crab'): os.system("sh " + Path_Cmd)
-    elif subTool=='criminal':               print "Added jobs to global list"
+    elif subTool == 'criminal':             print "Added jobs to global list"
     else:                                   os.system("condor_submit " + Path_Cmd)
     print '\n' + CopyRights
     print '%i Job(s) has/have been submitted on the Computing Cluster' % Jobs_Count
@@ -477,8 +477,9 @@ def GetListOfFiles(Prefix, InputPattern, Suffix):
        List = glob.glob(InputPattern)
 
     List = sorted(List)
-    for i in range(len(List)):
-       List[i] = Prefix + List[i] + Suffix
+    #for i in range(len(List)):
+       #List[i] = Prefix + List[i] + Suffix
+    List = [Prefix + i + Suffix for i in List]
     return natural_sort(List)
 
 
@@ -526,11 +527,12 @@ process.source = cms.Source("PoolSource",
 )
 
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-{}
+{input_files}
+
 process.OUT = cms.OutputModule( "PoolOutputModule",
-    outputCommands = cms.untracked.vstring({}),
+    outputCommands = cms.untracked.vstring({keep_statement}),
     eventAutoFlushCompressedSize=cms.untracked.int32(15*1024*1024),
-    fileName = cms.untracked.string({})
+    fileName = cms.untracked.string({out_filename})
 )
 
 process.endPath = cms.EndPath(process.OUT)
@@ -540,20 +542,20 @@ process.endPath = cms.EndPath(process.OUT)
 def SendCMSMergeJob(FarmDirectory, JobName, InputFiles, OutputFile, KeepStatement):
     SendCluster_Create(FarmDirectory, JobName)
     Temp_Cfg   = Farm_Directories[1] + Jobs_Index + Jobs_Name + '_TEMP_cfg.py'
-    
+
     #if len(InputFiles)==0:
     if not InputFiles:
         print 'Empty InputFile List for Job named "%s", Job will not be submitted' % JobName
         return
-    
+
     #InputFilesString = ''
     #InputFiles = natural_sort(InputFiles)
     #for i in InputFiles:
         #InputFilesString += "process.source.fileNames.extend([" + i.replace(',',' ') + '])\n'
     InputFilesString = ''.join(("process.source.fileNames.extend([" + i.replace(',',' ') + '])\n' for i in natural_sort(InputFiles)))
 
-    with open(Temp_Cfg,'w') as cfg_file:
-        cfg_file.write(def_pycfg_file_text.format(InputFilesString, KeepStatement, OutputFile))
+    with open(Temp_Cfg, 'w') as cfg_file:
+        cfg_file.write( def_pycfg_file_text.format(input_files = InputFilesString, keep_statement = KeepStatement, out_filename = OutputFile) )
     SendCluster_Push  (["CMSSW", Temp_Cfg])
     SendCluster_Submit()
     os.system('rm '+ Temp_Cfg)
