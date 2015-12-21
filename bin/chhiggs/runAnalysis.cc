@@ -1678,14 +1678,31 @@ int main (int argc, char *argv[])
         // Fill the control plots
         for(size_t k=0; k<ctrlCats.size(); ++k){
           
+          // The actual names of the histograms are:
+          //  //lepton control
+          //  mon.addHistogram( new TH1D(icat+"inclusivept",      ";Transverse momentum [GeV];Events",             50, 0.,  500.  ));
+          //  mon.addHistogram( new TH1D(icat+"leadleptonpt",     ";Transverse momentum [GeV];Events",            100, 0.,  500.  )); 
+          //  mon.addHistogram( new TH1D(icat+"leadleptoneta",    ";Pseudo-rapidity;Events",                       50, 0.,    2.5 ));
+          //  mon.addHistogram( new TH1D(icat+"trailerleptonpt",  ";Transverse momentum [GeV];Events",             50, 0.,  500.  ));
+          //  mon.addHistogram( new TH1D(icat+"trailerleptoneta", ";Pseudo-rapidity;Events",                       50, 0.,    2.5 ));
+          //  mon.addHistogram( new TH1D(icat+"pte",              ";Electron transverse momentum [GeV];Events",    50, 0.,  500.  ));
+          //  mon.addHistogram( new TH1D(icat+"ptmu",             ";Muon transverse momentum [GeV];Events",        50, 0.,  500.  ));
+          //  mon.addHistogram( new TH1D(icat+"qt",               ";Transverse momentum [GeV];Events / (1 GeV)", 1500, 0., 1500.  ));
+          //  mon.addHistogram( new TH1D(icat+"emva", "; e-id MVA; Electrons", 50, 0.95,1.0) );
+
+
           TString icat(ctrlCats[k]);
           mon.fillHisto(icat+"nvtxraw",    tags, nGoodPV,                            rawWeight);
           mon.fillHisto(icat+"nvtx",       tags, nGoodPV,                            weight   );
           mon.fillHisto(icat+"rho",        tags, rho,                                weight   );
-          mon.fillHisto(icat+"leadpt",     tags, selLeptons[0].pt(),                 weight   );
-          mon.fillHisto(icat+"trailerpt",  tags, selLeptons[1].pt(),                 weight   );
-          mon.fillHisto(icat+"leadeta",    tags, fabs(selLeptons[0].eta()),          weight   );
-          mon.fillHisto(icat+"trailereta", tags, fabs(selLeptons[1].eta()),          weight   );
+          // mon.fillHisto(icat+"leadpt",     tags, selLeptons[0].pt(),                 weight   );
+          mon.fillHisto(icat+"leadleptonpt",     tags, selLeptons[0].pt(),                 weight   );
+          // mon.fillHisto(icat+"trailerpt",  tags, selLeptons[1].pt(),                 weight   );
+          mon.fillHisto(icat+"trailerleptonpt",  tags, selLeptons[1].pt(),                 weight   );
+          // mon.fillHisto(icat+"leadeta",    tags, fabs(selLeptons[0].eta()),          weight   );
+          mon.fillHisto(icat+"leadleptoneta",    tags, fabs(selLeptons[0].eta()),          weight   );
+          // mon.fillHisto(icat+"trailereta", tags, fabs(selLeptons[1].eta()),          weight   );
+          mon.fillHisto(icat+"trailerleptoneta", tags, fabs(selLeptons[1].eta()),          weight   );
           mon.fillHisto(icat+"ntaus",      tags, ntaus,                              weight   );
           mon.fillHisto(icat+"met",        tags, met.pt(),                           weight   );
           mon.fillHisto(icat+"recomet",    tags, recoMET.pt(),                       weight   );
