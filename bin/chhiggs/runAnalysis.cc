@@ -756,7 +756,19 @@ int main (int argc, char *argv[])
   gROOT->cd ();                 //THIS LINE IS NEEDED TO MAKE SURE THAT HISTOGRAM INTERNALLY PRODUCED IN LumiReWeighting ARE NOT DESTROYED WHEN CLOSING THE FILE
   
   //higgs::utils::EventCategory eventCategoryInst(higgs::utils::EventCategory::EXCLUSIVE2JETSVBF); //jet(0,>=1)+vbf binning
-  
+ 
+
+  patUtils::MetFilter metFiler;
+  if(!isMC) { 
+        metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/DoubleEG_RunD/DoubleEG_csc2015.txt");
+        metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/DoubleEG_RunD/DoubleEG_ecalscn1043093.txt");
+        metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/DoubleMuon_RunD/DoubleMuon_csc2015.txt");
+        metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/DoubleMuon_RunD/DoubleMuon_ecalscn1043093.txt");
+        metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/MuonEG_RunD/MuonEG_csc2015.txt");
+        metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/MuonEG_RunD/MuonEG_ecalscn1043093.txt");
+  }
+
+
   //##############################################
   //########           EVENT LOOP         ########
   //##############################################
@@ -921,9 +933,8 @@ int main (int argc, char *argv[])
         if (!(eTrigger || muTrigger)) continue;         //ONLY RUN ON THE EVENTS THAT PASS OUR TRIGGERS
 
         // ------------ Apply MET filters ------------
-        if(!patUtils::passMetFilters(ev, isPromptReco)) continue;
-        
-        
+        if( !isMC && !metFiler.passMetFilter( ev, isPromptReco )) continue;
+ 
         //load all the objects we will need to access
 
         double rho = 0;
@@ -1319,7 +1330,7 @@ int main (int argc, char *argv[])
         isEMu(false);
       int multiChannel(0);
       if      (abs(slepId)==13 && muTrigger && nVetoE==0 && nVetoMu==0){ isSingleMu = true; multiChannel++; chTags.push_back("singlemu");}
-      else if (abs(slepId)==13 && eTrigger  && nVetoE==0 && nVetoMu==0){ isSingleE  = true; multiChannel++; chTags.push_back("singlee");}
+      else if (abs(slepId)==11 && eTrigger  && nVetoE==0 && nVetoMu==0){ isSingleE  = true; multiChannel++; chTags.push_back("singlee");}
       else if (abs(dilId)==121 && eTrigger                            ){ isDoubleE  = true; multiChannel++; chTags.push_back("ee");}
       else if (abs(dilId)==169 && muTrigger                           ){ isDoubleMu = true; multiChannel++; chTags.push_back("mumu");}
       else if (abs(dilId)==143 && muTrigger                           ){ isEMu      = true; multiChannel++; chTags.push_back("emu");}
@@ -1667,14 +1678,31 @@ int main (int argc, char *argv[])
         // Fill the control plots
         for(size_t k=0; k<ctrlCats.size(); ++k){
           
+          // The actual names of the histograms are:
+          //  //lepton control
+          //  mon.addHistogram( new TH1D(icat+"inclusivept",      ";Transverse momentum [GeV];Events",             50, 0.,  500.  ));
+          //  mon.addHistogram( new TH1D(icat+"leadleptonpt",     ";Transverse momentum [GeV];Events",            100, 0.,  500.  )); 
+          //  mon.addHistogram( new TH1D(icat+"leadleptoneta",    ";Pseudo-rapidity;Events",                       50, 0.,    2.5 ));
+          //  mon.addHistogram( new TH1D(icat+"trailerleptonpt",  ";Transverse momentum [GeV];Events",             50, 0.,  500.  ));
+          //  mon.addHistogram( new TH1D(icat+"trailerleptoneta", ";Pseudo-rapidity;Events",                       50, 0.,    2.5 ));
+          //  mon.addHistogram( new TH1D(icat+"pte",              ";Electron transverse momentum [GeV];Events",    50, 0.,  500.  ));
+          //  mon.addHistogram( new TH1D(icat+"ptmu",             ";Muon transverse momentum [GeV];Events",        50, 0.,  500.  ));
+          //  mon.addHistogram( new TH1D(icat+"qt",               ";Transverse momentum [GeV];Events / (1 GeV)", 1500, 0., 1500.  ));
+          //  mon.addHistogram( new TH1D(icat+"emva", "; e-id MVA; Electrons", 50, 0.95,1.0) );
+
+
           TString icat(ctrlCats[k]);
           mon.fillHisto(icat+"nvtxraw",    tags, nGoodPV,                            rawWeight);
           mon.fillHisto(icat+"nvtx",       tags, nGoodPV,                            weight   );
           mon.fillHisto(icat+"rho",        tags, rho,                                weight   );
-          mon.fillHisto(icat+"leadpt",     tags, selLeptons[0].pt(),                 weight   );
-          mon.fillHisto(icat+"trailerpt",  tags, selLeptons[1].pt(),                 weight   );
-          mon.fillHisto(icat+"leadeta",    tags, fabs(selLeptons[0].eta()),          weight   );
-          mon.fillHisto(icat+"trailereta", tags, fabs(selLeptons[1].eta()),          weight   );
+          // mon.fillHisto(icat+"leadpt",     tags, selLeptons[0].pt(),                 weight   );
+          mon.fillHisto(icat+"leadleptonpt",     tags, selLeptons[0].pt(),                 weight   );
+          // mon.fillHisto(icat+"trailerpt",  tags, selLeptons[1].pt(),                 weight   );
+          mon.fillHisto(icat+"trailerleptonpt",  tags, selLeptons[1].pt(),                 weight   );
+          // mon.fillHisto(icat+"leadeta",    tags, fabs(selLeptons[0].eta()),          weight   );
+          mon.fillHisto(icat+"leadleptoneta",    tags, fabs(selLeptons[0].eta()),          weight   );
+          // mon.fillHisto(icat+"trailereta", tags, fabs(selLeptons[1].eta()),          weight   );
+          mon.fillHisto(icat+"trailerleptoneta", tags, fabs(selLeptons[1].eta()),          weight   );
           mon.fillHisto(icat+"ntaus",      tags, ntaus,                              weight   );
           mon.fillHisto(icat+"met",        tags, met.pt(),                           weight   );
           mon.fillHisto(icat+"recomet",    tags, recoMET.pt(),                       weight   );
