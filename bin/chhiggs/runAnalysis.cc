@@ -1398,13 +1398,13 @@ int main (int argc, char *argv[])
 
           // Lepton and dilepton control
           // mon.fillHisto(icat+"leadpt",      tags, selLeptons[0].pt(),        weight);
-          // TODO there is only tauleadpt in output plots
+          //  there is only tauleadpt in output plots
           // mon.fillHisto(icat+"trailerpt",   tags, selLeptons[1].pt(),        weight);
-          // TODO trailerpt is not found in the output plots
+          //  trailerpt is not found in the output plots
           // mon.fillHisto(icat+"leadeta",     tags, fabs(selLeptons[0].eta()), weight);
-          // TODO there is only tauleadeta in output plots
+          //  there is only tauleadeta in output plots
           // mon.fillHisto(icat+"trailereta",  tags, fabs(selLeptons[1].eta()), weight);
-          // TODO trailereta is not found in the output plots
+          //  trailereta is not found in the output plots
 
           // mon.fillHisto(icat+"leadpt",     tags, selLeptons[0].pt(),                 weight   );
           mon.fillHisto(icat+"leadleptonpt",     tags, selLeptons[0].pt(),                 weight   );
@@ -1427,8 +1427,10 @@ int main (int argc, char *argv[])
           mon.fillHisto(icat+"met",          tags, met.pt(),                        weight);
           mon.fillHisto(icat+"recomet",      tags, recoMET.pt(),                    weight);
           mon.fillHisto(icat+"dilarccosine", tags, thetall,                         weight);
-          mon.fillHisto(icat+"sumpt",        tags, sumpt,                           weight);
-          // TODO: sumpt is not found in the output plots
+          // mon.fillHisto(icat+"sumpt",        tags, sumpt,                           weight);
+          //  sumpt is not found in the output plots
+          // there is only sumptll in the histograms
+          mon.fillHisto(icat+"sumptll",        tags, sumpt,                           weight);
           mon.fillHisto(icat+"mtsum",        tags, mtsum,                           weight);
           mon.fillHisto(icat+"qt",           tags, dileptonSystem.pt(),             weight, true);
           // mon.fillHisto("qtraw",    tags, dileptonSystem.pt(),weight/triggerPrescale,true);                                                                                      
