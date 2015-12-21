@@ -1397,10 +1397,24 @@ int main (int argc, char *argv[])
           mon.fillHisto(icat+"rho",     tags, rho,     weight   );
 
           // Lepton and dilepton control
-          mon.fillHisto(icat+"leadpt",      tags, selLeptons[0].pt(),        weight);
-          mon.fillHisto(icat+"trailerpt",   tags, selLeptons[1].pt(),        weight);
-          mon.fillHisto(icat+"leadeta",     tags, fabs(selLeptons[0].eta()), weight);
-          mon.fillHisto(icat+"trailereta",  tags, fabs(selLeptons[1].eta()), weight);
+          // mon.fillHisto(icat+"leadpt",      tags, selLeptons[0].pt(),        weight);
+          // TODO there is only tauleadpt in output plots
+          // mon.fillHisto(icat+"trailerpt",   tags, selLeptons[1].pt(),        weight);
+          // TODO trailerpt is not found in the output plots
+          // mon.fillHisto(icat+"leadeta",     tags, fabs(selLeptons[0].eta()), weight);
+          // TODO there is only tauleadeta in output plots
+          // mon.fillHisto(icat+"trailereta",  tags, fabs(selLeptons[1].eta()), weight);
+          // TODO trailereta is not found in the output plots
+
+          // mon.fillHisto(icat+"leadpt",     tags, selLeptons[0].pt(),                 weight   );
+          mon.fillHisto(icat+"leadleptonpt",     tags, selLeptons[0].pt(),                 weight   );
+          // mon.fillHisto(icat+"trailerpt",  tags, selLeptons[1].pt(),                 weight   );
+          mon.fillHisto(icat+"trailerleptonpt",  tags, selLeptons[1].pt(),                 weight   );
+          // mon.fillHisto(icat+"leadeta",    tags, fabs(selLeptons[0].eta()),          weight   );
+          mon.fillHisto(icat+"leadleptoneta",    tags, fabs(selLeptons[0].eta()),          weight   );
+          // mon.fillHisto(icat+"trailereta", tags, fabs(selLeptons[1].eta()),          weight   );
+          mon.fillHisto(icat+"trailerleptoneta", tags, fabs(selLeptons[1].eta()),          weight   );
+
 
           double thetall(utils::cmssw::getArcCos<patUtils::GenericLepton>(selLeptons[0],selLeptons[1]));
           double sumpt(selLeptons[0].pt()+selLeptons[1].pt());
@@ -1414,6 +1428,7 @@ int main (int argc, char *argv[])
           mon.fillHisto(icat+"recomet",      tags, recoMET.pt(),                    weight);
           mon.fillHisto(icat+"dilarccosine", tags, thetall,                         weight);
           mon.fillHisto(icat+"sumpt",        tags, sumpt,                           weight);
+          // TODO: sumpt is not found in the output plots
           mon.fillHisto(icat+"mtsum",        tags, mtsum,                           weight);
           mon.fillHisto(icat+"qt",           tags, dileptonSystem.pt(),             weight, true);
           // mon.fillHisto("qtraw",    tags, dileptonSystem.pt(),weight/triggerPrescale,true);                                                                                      
