@@ -26,6 +26,8 @@
   <bin name="runFixedPlotter"             file="chhiggs/runFixedPlotter.cc"></bin> 
   <bin name="fitTTbarCrossSection"        file="chhiggs/fitTTbarCrossSection.cc"></bin>
 <!--  <bin name="runTtHMuMuAnalysis"          file="tthmumu/runAnalysis.cc"></bin>-->
+  
+  <bin name="runTauFakesStudy"            file="taupog/tauFakesStudy.cc"></bin>
 
 <bin name="runHZZ2l2vAnalysis"          file="hzz2l2v/runHZZ2l2vAnalysis.cc"></bin>
 
