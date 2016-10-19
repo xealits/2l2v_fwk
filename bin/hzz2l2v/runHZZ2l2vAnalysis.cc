@@ -38,6 +38,7 @@
 #include "UserCode/llvv_fwk/interface/SmartSelectionMonitor.h"
 #include "UserCode/llvv_fwk/interface/TMVAUtils.h"
 #include "UserCode/llvv_fwk/interface/LeptonEfficiencySF.h"
+#include "UserCode/llvv_fwk/interface/PhotonEfficiencySF.h"
 #include "UserCode/llvv_fwk/interface/PDFInfo.h"
 #include "UserCode/llvv_fwk/interface/rochcor2015.h"
 #include "UserCode/llvv_fwk/interface/rochcor2016.h"
@@ -436,6 +437,11 @@ int main(int argc, char* argv[])
   mon.addHistogram( new TH1F("csvc",     ";Combined Secondary Vertex;Jets",50,0.,1.) );
   mon.addHistogram( new TH1F("csvothers",";Combined Secondary Vertex;Jets",50,0.,1.) );
   mon.addHistogram( new TH1F("leadjetpt",    ";Transverse momentum [GeV];Events",50,0,1000) );
+
+  mon.addHistogram( new TH1F("leadjet_pt",    ";Transverse momentum [GeV];Events",50,0,1000) );  
+  mon.addHistogram( new TH1F("leadjet_eta",    ";Pseudo-rapidity;Events",25,0,5) );   
+  mon.addHistogram( new TH1F("leadjet_phi",    ";leadjet #phi;Events",80, -4, 4) );        
+
   mon.addHistogram( new TH1F("trailerjetpt", ";Transverse momentum [GeV];Events",50,0,1000) );
   mon.addHistogram( new TH1F("vbfjeteta",    ";Pseudo-rapidity;Events",25,0,5) );
   mon.addHistogram( new TH1F("fwdjeteta",    ";Pseudo-rapidity;Events",25,0,5) );
@@ -507,7 +513,6 @@ int main(int argc, char* argv[])
   mon.addHistogram( new TH1F( "mt_Outbveto80"  ,         ";Transverse mass [GeV];Events / GeV",nmtAxis-1,mtaxis) );
   mon.addHistogram( new TH1F( "mt_Outbtag125"  ,         ";Transverse mass [GeV];Events / GeV",nmtAxis-1,mtaxis) );
   mon.addHistogram( new TH1F( "mt_Outbveto125"  ,         ";Transverse mass [GeV];Events / GeV",nmtAxis-1,mtaxis) );
-
 
   mon.addHistogram( new TH1F( "mtfinal"  ,         ";Transverse mass [GeV];Events / GeV",nmtAxis-1,mtaxis) );
   mon.addHistogram( new TH1F( "metfinal",          ";Missing transverse energy [GeV];Events / GeV",nmetAxis-1,metaxis) ); //50,0,1000) );
@@ -624,6 +629,9 @@ int main(int argc, char* argv[])
 
   //lepton efficiencies
   LeptonEfficiencySF lepEff;
+
+  //photon efficiencies
+  PhotonEfficiencySF phoEff;
 
   //b-tagging: beff and leff must be derived from the MC sample using the discriminator vs flavor
   //the scale factors are taken as average numbers from the pT dependent curves see:
@@ -1137,7 +1145,7 @@ int main(int argc, char* argv[])
             if(photonTrigger && (photon.pt()<(triggerThreshold) || photon.pt()>(triggerThresholdHigh+10)))continue;
 
 	    //Calibrate photon energy
-	    //PhotonEnCorrector.calibrate(photon, ev.eventAuxiliary().run(), edm::StreamID::invalidStreamID()); 
+	    PhotonEnCorrector.calibrate(photon, ev.eventAuxiliary().run(), edm::StreamID::invalidStreamID()); 
 
 	    //Removed all the phtons which are alsp reconstructed ad Electron and muons
             double minDRlg(9999.);
@@ -1215,6 +1223,7 @@ int main(int argc, char* argv[])
               //update according to the SF measured by BTV
               if(isMC){
                   int flavId=jet.partonFlavour();  double eta=jet.eta();
+		  btsfutil.SetSeed(ev.eventAuxiliary().event()*10 + ijet*10000);
                   if      (abs(flavId)==5){  btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal   .eval(BTagEntry::FLAV_B   , eta, jet.pt()), beff);
                                              btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalUp .eval(BTagEntry::FLAV_B   , eta, jet.pt()), beff);
                                              btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalDn .eval(BTagEntry::FLAV_B   , eta, jet.pt()), beff);
@@ -1313,6 +1322,9 @@ int main(int argc, char* argv[])
                        dilId *= selLeptons[ilep].pdgId();
                        int id(abs(selLeptons[ilep].pdgId()));
 		       if(is2016MC) {
+			   
+                           if(id==11)weight *= lepEff.getTrackingEfficiency( selLeptons[ilep].el.superCluster()->eta(), id).first; //Tracking eff 
+                           else if(id==13)weight *= lepEff.getTrackingEfficiency( selLeptons[ilep].eta(), id).first; //Tracking eff
                            weight *= isMC ? lepEff.getLeptonEfficiency( selLeptons[ilep].pt(), selLeptons[ilep].eta(), id,  id ==11 ? "tight"    : "tight"   ,patUtils::CutVersion::ICHEP16Cut ).first : 1.0; //ID 
                            weight *= isMC ? lepEff.getLeptonEfficiency( selLeptons[ilep].pt(), selLeptons[ilep].eta(), id,  id ==11 ? "tightiso" : "tightiso",patUtils::CutVersion::ICHEP16Cut ).first : 1.0; //ISO w.r.t ID
 		       } else if(isMC && !is2016MC){
@@ -1346,6 +1358,7 @@ int main(int argc, char* argv[])
                    if(L>0 && gammaWgtHandler)photonWeightMain=gammaWgtHandler->getWeightFor(photonVars,string(L==1?"ee":"mumu")+evCat);
                    //if(L>0 && gammaWgtHandler)printf("Photon pT = %6.2f --> prescale=%6.2f weight=%6.2E forL=%i  cat=%s\n", boson.pt(), triggerPrescale, photonWeightMain, L, (string(L==1?"ee":"mumu")+evCat).Data());
                    weight *= triggerPrescale * photonWeightMain;
+		   if(is2016MC) weight *= phoEff.getPhotonEfficiency(selPhotons[0].pt(), selPhotons[0].superCluster()->eta(), "tight",patUtils::CutVersion::ICHEP16Cut ).first;
                }else{
                   continue;
                }
@@ -1367,6 +1380,7 @@ int main(int argc, char* argv[])
                bool passThirdLeptonVeto( selLeptons.size()==2 && extraLeptons.size()==0 );
                bool passBtags(nbtags==0); 
                bool passMinDphijmet( njets==0 || mindphijmet>0.5);
+
 
                if(dilId==22){
                    passMass=photonTrigger;
@@ -1458,6 +1472,13 @@ int main(int argc, char* argv[])
                       if(passThirdLeptonVeto){
                         
                         mon.fillHisto("eventflow",tags,4,weight);
+
+			if (selJets.size()>0) {
+			  mon.fillHisto( "leadjet_pt",tags,selJets[0].pt(),weight);       
+			  mon.fillHisto( "leadjet_eta",tags,fabs(selJets[0].eta()),weight);
+			  mon.fillHisto( "leadjet_phi",tags,selJets[0].phi(),weight);
+			}
+
                         for(size_t ijet=0; ijet<selJets.size(); ijet++){
                           if(selJets[ijet].pt()<30 || fabs(selJets[ijet].eta())>2.5) continue;
 
@@ -1685,10 +1706,10 @@ int main(int argc, char* argv[])
 
                           //if(nri==0 && index==0)printf("%9i:%9lli SYST:%30s  Met=%8.3f mT=%8.3f  Weight=%6.2E\n",  ev.eventAuxiliary().run(), ev.eventAuxiliary().event(), varNames[ivar].Data(), imet.pt(), mt, weight ); 
 
-                          if(passBtags && !isZ_SB)mon.fillHisto(TString("mt_shapes_NRBctrl")+NRsuffix[nri]+varNames[ivar],tags,index, 0.5,shapeWeight);
+                          if(passBtags && passMass)mon.fillHisto(TString("mt_shapes_NRBctrl")+NRsuffix[nri]+varNames[ivar],tags,index, 0.5,shapeWeight);
                           if(passBtags && isZ_SB)mon.fillHisto(TString("mt_shapes_NRBctrl")+NRsuffix[nri]+varNames[ivar],tags,index, 1.5,shapeWeight);
                           if(passBtags && isZ_upSB)mon.fillHisto(TString("mt_shapes_NRBctrl")+NRsuffix[nri]+varNames[ivar],tags,index, 2.5,shapeWeight);
-                          if(!passBtags && !isZ_SB)mon.fillHisto(TString("mt_shapes_NRBctrl")+NRsuffix[nri]+varNames[ivar],tags,index, 3.5,shapeWeight);
+                          if(!passBtags && passMass)mon.fillHisto(TString("mt_shapes_NRBctrl")+NRsuffix[nri]+varNames[ivar],tags,index, 3.5,shapeWeight);
                           if(!passBtags && isZ_SB)mon.fillHisto(TString("mt_shapes_NRBctrl")+NRsuffix[nri]+varNames[ivar],tags,index, 4.5,shapeWeight);
                           if(!passBtags && isZ_upSB)mon.fillHisto(TString("mt_shapes_NRBctrl")+NRsuffix[nri]+varNames[ivar],tags,index, 5.5,shapeWeight);
 
@@ -1711,7 +1732,6 @@ int main(int argc, char* argv[])
   //scale all events by 1/N to avoid the initial loop to stupidly count the events
   //mon.Scale(1.0/totalNumEvent);
 
-  
   TString terminationCmd = "";
   //save control plots to file
   printf("Results save in local directory and moved to %s\n", outUrl.Data());
