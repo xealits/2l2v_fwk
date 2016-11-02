@@ -37,18 +37,18 @@
 #include "PhysicsTools/Utilities/interface/LumiReWeighting.h"
 //#include "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneAlgorithm.h" //for svfit
 
-#include "TauAnalysis/JetToTauFakeRate/interface/MacroUtils.h"
-#include "TauAnalysis/JetToTauFakeRate/interface/HiggsUtils.h"
-#include "TauAnalysis/JetToTauFakeRate/interface/SmartSelectionMonitor.h"
-#include "TauAnalysis/JetToTauFakeRate/interface/TMVAUtils.h"
-#include "TauAnalysis/JetToTauFakeRate/interface/LeptonEfficiencySF.h"
-#include "TauAnalysis/JetToTauFakeRate/interface/PDFInfo.h"
+#include "UserCode/llvv_fwk/interface/MacroUtils.h"
+#include "UserCode/llvv_fwk/interface/HiggsUtils.h"
+#include "UserCode/llvv_fwk/interface/SmartSelectionMonitor.h"
+#include "UserCode/llvv_fwk/interface/TMVAUtils.h"
+#include "UserCode/llvv_fwk/interface/LeptonEfficiencySF.h"
+#include "UserCode/llvv_fwk/interface/PDFInfo.h"
 //#include "TauAnalysis/JetToTauFakeRate/interface/MuScleFitCorrector.h"
-#include "TauAnalysis/JetToTauFakeRate/interface/rochcor2015.h"
-#include "TauAnalysis/JetToTauFakeRate/interface/BtagUncertaintyComputer.h"
-#include "TauAnalysis/JetToTauFakeRate/interface/GammaWeightsHandler.h"
+#include "UserCode/llvv_fwk/interface/rochcor2015.h"
+#include "UserCode/llvv_fwk/interface/BtagUncertaintyComputer.h"
+#include "UserCode/llvv_fwk/interface/GammaWeightsHandler.h"
 
-#include "TauAnalysis/JetToTauFakeRate/interface/PatUtils.h"
+#include "UserCode/llvv_fwk/interface/PatUtils.h"
 
 
 #include "TSystem.h"
