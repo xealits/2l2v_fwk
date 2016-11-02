@@ -4,7 +4,7 @@
 
 # 1: run the analysis (must merge submit script here)
 
-JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/samples.json
+JSONFILE=$CMSSW_BASE/src/UserCode/llvv_fwk/test/taupog/samples.json
 #JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/samples_400.json
 ###JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/wjet_stitch.json
 #JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/samples_wjet.json
@@ -14,15 +14,12 @@ JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/samples.json
 #JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/wjetsonly.json
 #JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/data_samples_all.json#
 
-QUEUE=1nh
-QUEUE=crab
+QUEUE=batch
+#QUEUE=crab
 
-OUTDIR=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/test/2015fakes/
-#QUEUE=8nm
-#OUTDIR=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/test/2015fakes8nm/
+OUTDIR=$CMSSW_BASE/src/UserCode/llvv_fwk/test/taupog/poggami/
 
-
-BASEWEBDIR=~/www/13TeV_tauFakes_25ns_2016
+BASEWEBDIR=~/www/taufakes/
 
 #PLOTTER=runFixedPlotter
 PLOTTER=runPlotter
@@ -47,7 +44,7 @@ if [ "${1}" = "submit" ]; then
 	LFN=" --lfn ${4} "
     fi
 
-    runAnalysisOverSamples.py -e runTauFakesStudy -j ${JSONFILE} -o ${OUTDIR} -d  /dummy/ -c $CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/test/runAnalysis_cfg.py.templ -p "@useMVA=False @saveSummaryTree=False @runSystematics=False @automaticSwitch=False @is2011=False @jacknife=0 @jacks=0" ${LFN} -s ${QUEUE}
+    runAnalysisOverSamples.py -e runTauFakesStudy -j ${JSONFILE} -o ${OUTDIR} -d  /dummy/ -c $CMSSW_BASE/src/UserCode/llvv_fwk/test/runAnalysis_cfg.py.templ -p "@useMVA=False @saveSummaryTree=False @runSystematics=False @automaticSwitch=False @is2011=False @jacknife=0 @jacks=0" ${LFN} -s ${QUEUE}
     
 elif [ "${1}" = "lumi" ]; then
     rm qcd_lumi.json
