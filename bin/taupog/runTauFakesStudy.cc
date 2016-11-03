@@ -270,26 +270,52 @@ int main (int argc, char *argv[])
   
   std::vector<TString> tauDiscriminators;
   tauDiscriminators.clear();
-
-
+  
   tauDiscriminators.push_back("byLooseCombinedIsolationDeltaBetaCorr3Hits");
   tauDiscriminators.push_back("byMediumCombinedIsolationDeltaBetaCorr3Hits");
   tauDiscriminators.push_back("byTightCombinedIsolationDeltaBetaCorr3Hits");
-  
-  tauDiscriminators.push_back("byVLooseIsolationMVA3oldDMwLT");
-  tauDiscriminators.push_back("byLooseIsolationMVA3oldDMwLT");
-  tauDiscriminators.push_back("byMediumIsolationMVA3oldDMwLT");
-  tauDiscriminators.push_back("byTightIsolationMVA3oldDMwLT");
-  tauDiscriminators.push_back("byVTightIsolationMVA3oldDMwLT");
-  tauDiscriminators.push_back("byVVTightIsolationMVA3oldDMwLT");
 
-  tauDiscriminators.push_back("byVLooseIsolationMVA3newDMwLT");
-  tauDiscriminators.push_back("byLooseIsolationMVA3newDMwLT");
-  tauDiscriminators.push_back("byMediumIsolationMVA3newDMwLT");
-  tauDiscriminators.push_back("byTightIsolationMVA3newDMwLT");
-  tauDiscriminators.push_back("byVTightIsolationMVA3newDMwLT");
-  tauDiscriminators.push_back("byVVTightIsolationMVA3newDMwLT");
+  tauDiscriminators.push_back("byVLooseIsolationMVArun2v1DBdR03oldDMwLT");
+  tauDiscriminators.push_back("byLooseIsolationMVArun2v1DBdR03oldDMwLT");
+  tauDiscriminators.push_back("byMediumIsolationMVArun2v1DBdR03oldDMwLT");
+  tauDiscriminators.push_back("byTightIsolationMVArun2v1DBdR03oldDMwLT");
+  tauDiscriminators.push_back("byVTightIsolationMVArun2v1DBdR03oldDMwLT");
+  tauDiscriminators.push_back("byVVTightIsolationMVArun2v1DBdR03oldDMwLT");
 
+  tauDiscriminators.push_back("byVLooseIsolationMVArun2v1DBnewDMwLT");
+  tauDiscriminators.push_back("byLooseIsolationMVArun2v1DBnewDMwLT");
+  tauDiscriminators.push_back("byMediumIsolationMVArun2v1DBnewDMwLT");
+  tauDiscriminators.push_back("byTightIsolationMVArun2v1DBnewDMwLT");
+  tauDiscriminators.push_back("byVTightIsolationMVArun2v1DBnewDMwLT");
+  tauDiscriminators.push_back("byVVTightIsolationMVArun2v1DBnewDMwLT");
+
+  tauDiscriminators.push_back("byVLooseIsolationMVArun2v1DBoldDMwLT");
+  tauDiscriminators.push_back("byLooseIsolationMVArun2v1DBoldDMwLT");
+  tauDiscriminators.push_back("byMediumIsolationMVArun2v1DBoldDMwLT");
+  tauDiscriminators.push_back("byTightIsolationMVArun2v1DBoldDMwLT");
+  tauDiscriminators.push_back("byVTightIsolationMVArun2v1DBoldDMwLT");
+  tauDiscriminators.push_back("byVVTightIsolationMVArun2v1DBoldDMwLT");
+
+  tauDiscriminators.push_back("byVLooseIsolationMVArun2v1PWdR03oldDMwLT");
+  tauDiscriminators.push_back("byLooseIsolationMVArun2v1PWdR03oldDMwLT");
+  tauDiscriminators.push_back("byMediumIsolationMVArun2v1PWdR03oldDMwLT");
+  tauDiscriminators.push_back("byTightIsolationMVArun2v1PWdR03oldDMwLT");
+  tauDiscriminators.push_back("byVTightIsolationMVArun2v1PWdR03oldDMwLT");
+  tauDiscriminators.push_back("byVVTightIsolationMVArun2v1PWdR03oldDMwLT");
+
+  tauDiscriminators.push_back("byVLooseIsolationMVArun2v1PWnewDMwLT");
+  tauDiscriminators.push_back("byLooseIsolationMVArun2v1PWnewDMwLT");
+  tauDiscriminators.push_back("byMediumIsolationMVArun2v1PWnewDMwLT");
+  tauDiscriminators.push_back("byTightIsolationMVArun2v1PWnewDMwLT");
+  tauDiscriminators.push_back("byVTightIsolationMVArun2v1PWnewDMwLT");
+  tauDiscriminators.push_back("byVVTightIsolationMVArun2v1PWnewDMwLT");
+
+  tauDiscriminators.push_back("byVLooseIsolationMVArun2v1PWoldDMwLT");
+  tauDiscriminators.push_back("byLooseIsolationMVArun2v1PWoldDMwLT");
+  tauDiscriminators.push_back("byMediumIsolationMVArun2v1PWoldDMwLT");
+  tauDiscriminators.push_back("byTightIsolationMVArun2v1PWoldDMwLT");
+  tauDiscriminators.push_back("byVTightIsolationMVArun2v1PWoldDMwLT");
+  tauDiscriminators.push_back("byVVTightIsolationMVArun2v1PWoldDMwLT");
 
 
   
