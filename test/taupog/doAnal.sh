@@ -4,10 +4,11 @@
 
 # 1: run the analysis (must merge submit script here)
 
-JSONFILE=$CMSSW_BASE/src/UserCode/llvv_fwk/test/taupog/samples.json
+JSONFILE=$CMSSW_BASE/src/UserCode/llvv_fwk/test/taupog/samples2016.json
 
 QUEUE=batch
 #QUEUE=crab
+QUEUE=8nh
 
 OUTDIR=$CMSSW_BASE/src/UserCode/llvv_fwk/test/taupog/poggami/
 
