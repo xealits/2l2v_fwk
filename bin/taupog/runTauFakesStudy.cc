@@ -826,8 +826,8 @@ int main (int argc, char *argv[])
           //passVetoId = passId;
           
           //isolation
-          passIso     = lid == 11 ? patUtils::passIso(leptons[ilep].el, patUtils::llvvElecIso::Tight, patUtils::CutVersion::ICHEP16Cut, 0.) : patUtils::passIso(lepton.mu, patUtils::llvvMuonIso::Tight, patUtils::CutVersion::ICHEP16Cut);
-          passVetoIso = lid == 11 ? patUtils::passIso(leptons[ilep].el, patUtils::llvvElecIso::Loose, patUtils::CutVersion::ICHEP16Cut, 0.) : patUtils::passIso(lepton.mu, patUtils::llvvMuonIso::Loose, patUtils::CutVersion::ICHEP16Cut);
+          passIso     = lid == 11 ? patUtils::passIso(leptons[ilep].el, patUtils::llvvElecIso::Tight, patUtils::CutVersion::ICHEP16Cut, 0.) : patUtils::passIso(leptons[ilep].mu, patUtils::llvvMuonIso::Tight, patUtils::CutVersion::ICHEP16Cut);
+          passVetoIso = lid == 11 ? patUtils::passIso(leptons[ilep].el, patUtils::llvvElecIso::Loose, patUtils::CutVersion::ICHEP16Cut, 0.) : patUtils::passIso(leptons[ilep].mu, patUtils::llvvMuonIso::Loose, patUtils::CutVersion::ICHEP16Cut);
           
           //passIso = lid == 11 ? patUtils::passIso (leptons[ilep].el, patUtils::llvvElecIso::Tight) : patUtils::passIso (leptons[ilep].mu, patUtils::llvvMuonIso::Tight); // Try tight iso for dilepton
           //passVetoIso = passIso;
@@ -973,7 +973,7 @@ int main (int argc, char *argv[])
         if(passLepton) // Updated lepton selection
           {
             int id(abs(selLeptons[0].pdgId()));                                                                                                                               
-            weight *= isMC ? lepEff.getLeptonEfficiency( selLeptons[0].pt(), selLeptons[0].eta(), id,  id ==11 ? "tight"    : "tight"    ).first : 1.0; //ID               
+            weight *= isMC ? lepEff.getLeptonEfficiency( selLeptons[0].pt(), selLeptons[0].eta(), id,  id ==11 ? "tight"    : "tight ", patUtils::CutVersion::ICHEP16Cut   ).first : 1.0; //ID               
           }
         
         // Transverse mass

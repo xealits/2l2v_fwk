@@ -5,14 +5,6 @@
 # 1: run the analysis (must merge submit script here)
 
 JSONFILE=$CMSSW_BASE/src/UserCode/llvv_fwk/test/taupog/samples.json
-#JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/samples_400.json
-###JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/wjet_stitch.json
-#JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/samples_wjet.json
-#JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/qcd.json
-### JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/data.json
-#JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/data_samples.json
-#JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/wjetsonly.json
-#JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/data_samples_all.json#
 
 QUEUE=batch
 #QUEUE=crab
@@ -32,9 +24,9 @@ if [ "${1}" = "submit" ]; then
     mkdir -p ${OUTDIR}
 
     if   [ "${2}" = "data" ]; then
-        JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/data_samples.json
+        JSONFILE=$CMSSW_BASE/src/UserCode/llvv_fwk/data/data_samples.json
     elif [ "${2}" = "mc" ]; then
-        JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/mc_samples.json
+        JSONFILE=$CMSSW_BASE/src/UserCode/llvv_fwk/data/mc_samples.json
     else
         echo "Keep using the base json, i.e. ${JSONFILE}"
     fi
