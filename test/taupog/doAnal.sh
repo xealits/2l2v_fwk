@@ -17,6 +17,8 @@ BASEWEBDIR=~/www/taufakes/
 #PLOTTER=runFixedPlotter
 PLOTTER=runPlotter
 
+PILEUP=datapileup_2016
+
 
 if [ "${1}" = "submit" ]; then
     # cleanup (comment it out if you have smaller jsons for running only on a few sets while the others are OK
@@ -37,7 +39,7 @@ if [ "${1}" = "submit" ]; then
 	LFN=" --lfn ${4} "
     fi
 
-    runAnalysisOverSamples.py -e runTauFakesStudy -j ${JSONFILE} -o ${OUTDIR} -d  /dummy/ -c $CMSSW_BASE/src/UserCode/llvv_fwk/test/runAnalysis_cfg.py.templ -p "@useMVA=False @saveSummaryTree=False @runSystematics=False @automaticSwitch=False @is2011=False @jacknife=0 @jacks=0" ${LFN} -s ${QUEUE}
+    runAnalysisOverSamples.py -e runTauFakesStudy -j ${JSONFILE} -o ${OUTDIR} -d  /dummy/ -c $CMSSW_BASE/src/UserCode/llvv_fwk/test/runAnalysis_cfg.py.templ -p "@data_pileup="${PILEUP}" @useMVA=False @saveSummaryTree=False @runSystematics=False @automaticSwitch=False @is2011=False @jacknife=0 @jacks=0" ${LFN} -s ${QUEUE}
     
 elif [ "${1}" = "lumi" ]; then
     rm qcd_lumi.json
