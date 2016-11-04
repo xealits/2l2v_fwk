@@ -395,7 +395,7 @@ def SendCluster_Create(FarmDirectory, JobName):
         qbatchTestCommand="qsub"
         if( commands.getstatusoutput("ls /gstore/t3cms" )[1].find("store")==0): qbatchTestCommand="qstat"
         if( 'iihe.ac.be' in hostname): qbatchTestCommand="qstat"
-
+        if( 'uniovi.es'  in hostname): qbatchTestCommand='qstat'
         if(  commands.getstatusoutput("bjobs"          )[1].find("command not found")<0):   subTool = 'bsub'
         elif(commands.getstatusoutput(qbatchTestCommand)[1].find("command not found")<0):   subTool = 'qsub'
         else:                                                                               subTool = 'condor'
