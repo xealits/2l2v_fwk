@@ -368,15 +368,6 @@ int main (int argc, char *argv[])
   //fwlite::ChainEvent ev (urls);
   size_t totalEntries(0);// = ev.size ();
 
-  //MC normalization (to 1/pb)
-  double xsecWeight = xsec; // / totalEntries;
-  if(!isMC) xsecWeight = 1.0;
-  if(debug){
-    cout << "DEBUG: xsec: " << xsec << endl;
-    cout << "DEBUG: xsecWeight: " << xsecWeight << endl;
-    cout << "DEBUG: totalEntries: " << totalEntries << endl;
-  }
-  
   
   //jet energy scale and uncertainties 
   TString jecDir = runProcess.getParameter < std::string > ("jecDir");
@@ -418,6 +409,9 @@ int main (int argc, char *argv[])
     btagTight(0.970);
   
 
+  //MC normalization (to 1/pb)
+  double xsecWeight = 1.0;
+
   //pileup weighting
   edm::LumiReWeighting * LumiWeights = NULL;
   utils::cmssw::PuShifter_t PuShifters;
@@ -444,23 +438,29 @@ int main (int argc, char *argv[])
       utils::getPileupNormalization (mcPileupDistribution, PUNorm, LumiWeights, PuShifters);
     }
 
+  if(debug){
+    cout << "DEBUG: xsec: " << xsec << endl;
+    cout << "DEBUG: xsecWeight: " << xsecWeight << endl;
+    cout << "DEBUG: totalEntries: " << totalEntries << endl;
+  }
+
   gROOT->cd ();                 //THIS LINE IS NEEDED TO MAKE SURE THAT HISTOGRAM INTERNALLY PRODUCED IN LumiReWeighting ARE NOT DESTROYED WHEN CLOSING THE FILE
   
   //higgs::utils::EventCategory eventCategoryInst(higgs::utils::EventCategory::EXCLUSIVE2JETSVBF); //jet(0,>=1)+vbf binning
   
-  patUtils::MetFilter metFiler;
+  patUtils::MetFilter metFilter;
   if(!isMC)
     {
-	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/TauAnalysis/JetToTauFakeRate/data/MetFilter/DoubleEG_RunD/DoubleEG_csc2015.txt");
-	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/TauAnalysis/JetToTauFakeRate/data/MetFilter/DoubleEG_RunD/DoubleEG_ecalscn1043093.txt"); 
-	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/TauAnalysis/JetToTauFakeRate/data/MetFilter/DoubleMuon_RunD/DoubleMuon_csc2015.txt");
-	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/TauAnalysis/JetToTauFakeRate/data/MetFilter/DoubleMuon_RunD/DoubleMuon_ecalscn1043093.txt"); 
-	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/TauAnalysis/JetToTauFakeRate/data/MetFilter/MuonEG_RunD/MuonEG_csc2015.txt");
-	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/TauAnalysis/JetToTauFakeRate/data/MetFilter/MuonEG_RunD/MuonEG_ecalscn1043093.txt"); 
-
-        //FIXME, we need to add here the single mu, single el, and gamma path
+      // no 2016 yet // 	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/DoubleEG_RunD/DoubleEG_csc2015.txt");
+      // no 2016 yet // 	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/DoubleEG_RunD/DoubleEG_ecalscn1043093.txt"); 
+      // no 2016 yet // 	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/DoubleMuon_RunD/DoubleMuon_csc2015.txt");
+      // no 2016 yet // 	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/DoubleMuon_RunD/DoubleMuon_ecalscn1043093.txt"); 
+      // no 2016 yet // 	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/MuonEG_RunD/MuonEG_csc2015.txt");
+      // no 2016 yet // 	metFiler.FillBadEvents(string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/MetFilter/MuonEG_RunD/MuonEG_ecalscn1043093.txt"); 
+      
+      //FIXME, we need to add here the single mu, single el, and gamma path
     }
-
+  
 
 
 
@@ -579,35 +579,48 @@ int main (int argc, char *argv[])
           cout << "\t\t\t" << matches[t]->c_str() << endl;
         }
         
+      bool jetTrigger(true);
+      bool muTrigger(true);
+
+      if(!isMC)
+        {
+          jetTrigger = utils::passTriggerPatterns(tr, "HLT_PFJet450_v*");
+          //bool muTrigger   (utils::passTriggerPatterns (tr, "HLT_IsoMu20_v*", "HLT_IsoTkMu20_v*"));
+          muTrigger = utils::passTriggerPatterns(tr, "HLT_IsoMu22_v*","HLT_IsoTkMu22_v*");
+          /* Available in miniaod v2      
+             HLT_PFJet40_v1
+             HLT_PFJet60_v1
+             HLT_PFJet80_v1
+             HLT_PFJet140_v1
+             HLT_PFJet200_v1
+             HLT_PFJet260_v1
+             HLT_PFJet320_v1
+             HLT_PFJet400_v1
+             HLT_PFJet450_v1
+             HLT_PFJet500_v1
+          */
+          if (filterOnlyJETHT)    {                     muTrigger = false; }
+          if (filterOnlySINGLEMU) { jetTrigger = false;                    }
+        }
       
-      bool jetTrigger  (utils::passTriggerPatterns(tr, "HLT_PFJet450_v*"));
-      bool muTrigger   (utils::passTriggerPatterns (tr, "HLT_IsoMu20_v*", "HLT_IsoTkMu20_v*"));
-
-      /* Available in miniaod v2      
-         HLT_PFJet40_v1
-         HLT_PFJet60_v1
-         HLT_PFJet80_v1
-         HLT_PFJet140_v1
-         HLT_PFJet200_v1
-         HLT_PFJet260_v1
-         HLT_PFJet320_v1
-         HLT_PFJet400_v1
-         HLT_PFJet450_v1
-         HLT_PFJet500_v1
-      */
-
-      if (filterOnlyJETHT)    {                     muTrigger = false; }
-      if (filterOnlySINGLEMU) { jetTrigger = false;                    }
+      int metFilterValue(0);
+      bool filterbadPFMuon = true; 
+      bool filterbadChCandidate = true;
+          
+      metFilterValue = metFilter.passMetFilterInt( ev, true ); // true is is2016data                   // Apply Bad Charged Hadron and Bad Muon Filters from MiniAOD (for Run II 2016 only ) 
+      filterbadChCandidate = metFilter.passBadChargedCandidateFilter(ev); if (!filterbadChCandidate) {  metFilterValue=9; } 
+      filterbadPFMuon = metFilter.passBadPFMuonFilter(ev); if (!filterbadPFMuon) { metFilterValue=8; }
+      
       
       if(debug) cout << "Triggers: jet " << jetTrigger << ", muon " << muTrigger << endl;
-
+      
       if (!jetTrigger && !muTrigger){ nSkipped++; continue;}         //ONLY RUN ON THE EVENTS THAT PASS OUR TRIGGERS
       //##############################################   EVENT PASSED THE TRIGGER   #######################################
 
       if(debug) cout << "Event passed at least one trigger: jet " << jetTrigger << ", muon " << muTrigger << endl;
 
       // // -------------- Apply MET filters -------------------
-      if( !isMC && !metFiler.passMetFilterInt(ev)) continue;
+      if( metFilterValue !=0 ) continue; // This is for MC as well.
 
 
       //load all the objects we will need to access
