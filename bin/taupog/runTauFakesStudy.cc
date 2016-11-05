@@ -44,7 +44,8 @@
 #include "UserCode/llvv_fwk/interface/LeptonEfficiencySF.h"
 #include "UserCode/llvv_fwk/interface/PDFInfo.h"
 //#include "TauAnalysis/JetToTauFakeRate/interface/MuScleFitCorrector.h"
-#include "UserCode/llvv_fwk/interface/rochcor2015.h"
+#include "UserCode/llvv_fwk/interface/rochcor2016.h"
+#include "UserCode/llvv_fwk/interface/BTagCalibrationStandalone.h"
 #include "UserCode/llvv_fwk/interface/BtagUncertaintyComputer.h"
 #include "UserCode/llvv_fwk/interface/GammaWeightsHandler.h"
 
@@ -379,7 +380,7 @@ int main (int argc, char *argv[])
   if(debug) cout << "Jet CorrectionUncertainty created for directory " << jecDir << endl;
   //muon energy scale and uncertainties
   //MuScleFitCorrector *muCor = getMuonCorrector (jecDir, url);
-  rochcor2015* muCor = new rochcor2015(); // Replaces the RunI MuScle fit
+  rochcor2016* muCor = new rochcor2016(); // Replaces the RunI MuScle fit
   //lepton efficiencies
   LeptonEfficiencySF lepEff;
 
