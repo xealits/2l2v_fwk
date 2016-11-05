@@ -409,6 +409,18 @@ int main (int argc, char *argv[])
     btagMedium(0.890),
     btagTight(0.970);
   
+    BTagCalibration btagCalib("CSVv2", string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/weights/btagSF_CSVv2.csv");
+  BTagCalibrationReader btagCal   (&btagCalib, BTagEntry::OP_MEDIUM, "mujets", "central");  // calibration instance, operating point, measurement type, systematics type
+  BTagCalibrationReader btagCalUp (&btagCalib, BTagEntry::OP_MEDIUM, "mujets", "up"     );  // sys up
+  BTagCalibrationReader btagCalDn (&btagCalib, BTagEntry::OP_MEDIUM, "mujets", "down"   );  // sys down
+  BTagCalibrationReader btagCalL  (&btagCalib, BTagEntry::OP_MEDIUM, "comb", "central");  // calibration instance, operating point, measurement type, systematics type
+  BTagCalibrationReader btagCalLUp(&btagCalib, BTagEntry::OP_MEDIUM, "comb", "up"     );  // sys up
+  BTagCalibrationReader btagCalLDn(&btagCalib, BTagEntry::OP_MEDIUM, "comb", "down"   );  // sys down
+
+  // from Btag SF and eff from https://indico.cern.ch/event/437675/#preview:1629681
+  //beff = 0.747; sfb = 0.899; //for Loose WP  //sfb is not actually used as it's taken from btagCal
+
+
 
   //MC normalization (to 1/pb)
   double xsecWeight = 1.0;
@@ -969,6 +981,23 @@ int main (int argc, char *argv[])
             minDRlj = TMath::Min(minDRlj, deltaR (jets[ijet], selLeptons[ilep]));
           
           bool hasCSVtag( jets[ijet].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > btagMedium );
+          bool hasCSVtagUp = hasCSVtag;  
+          bool hasCSVtagDown = hasCSVtag;
+          //update according to the SF measured by BTV
+          if(isMC){
+            int flavId=jets[ijet].partonFlavour();  double eta=jets[ijet].eta();
+            btsfutil.SetSeed(ev.eventAuxiliary().event()*10 + ijet*10000);
+            if      (abs(flavId)==5){  btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal   .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+              btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalUp .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+              btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalDn .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+            }else if(abs(flavId)==4){  btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal   .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+              btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalUp .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+              btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalDn .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+            }else{                     btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCalL  .eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
+              btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalLUp.eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
+              btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalLDn.eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
+            }
+          }
 
           selQCDJets.push_back(jets[ijet]);
           if(hasCSVtag)
