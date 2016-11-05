@@ -12,10 +12,7 @@ QUEUE=8nh
 
 OUTDIR=$CMSSW_BASE/src/UserCode/llvv_fwk/test/taupog/poggami/
 
-BASEWEBDIR=~/www/taufakes/
-
-#PLOTTER=runFixedPlotter
-PLOTTER=runPlotter
+BASEWEBDIR=/eos/user/v/vischia/www/taufakes/
 
 PILEUP=datapileup_2016
 
@@ -101,27 +98,34 @@ elif [ "${1}" = "plot" ]; then
     mv ${DIR}*vischia*pdf ~/www/temptemp/
     rm -r ${DIR}*
     mv ~/www/temptemp/* ${DIR}
-    cp ~/www/HIG-13-026/index.php ${DIR}
+    cp /eos/user/v/vischia/www/HIG-13-026/index.php ${DIR}
 
 
     RUNINBACKGROUND="&"
     RUNINBACKGROUND=""
     # Different tests
-    LUMIWJETS=2136
-    LUMIQCD=2136
+    LUMI=12900
+    LUMIWJETS=${LUMI}
+    LUMIQCD=${LUMI}
     #LUMIWJETS=307
     #LUMIQCD=277
     #LUMIWJETS=336
     #LUMIQCD=729
     #LUMIWJETS=365
     #LUMIQCD=380
+    DEBUG=""
+    DEBUG=" --debug "
+    
+    PLOTTER=runFixedPlotter
+    #PLOTTER=runPlotter
 
-    JSONFILEWJETS=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/wjets_samples.json
-    JSONFILEQCD=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/qcd_samples.json
+
     #INDIR=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/test/results/
     INDIR=${OUTDIR}
     PLOTTERWJETS=${DIR}plotter_wjet.root
     PLOTTERQCD=${DIR}plotter_qcd.root
+    ONLYWJETS="--onlyStartWith wjet_step6eta_denominator"
+    ONLYQCD="--onlyStartWith qcd_step2eta_denominator"
     ONLYWJETS="--onlyStartWith wjet"
     ONLYQCD="--onlyStartWith qcd"
     PLOTEXT=" --plotExt .png --plotExt .pdf --plotExt .C "
@@ -129,33 +133,33 @@ elif [ "${1}" = "plot" ]; then
     #MERGE="--forceMerge"
     #MERGE="--useMerged"
     MERGE=""
-    
+
     ## Create plotter files from which the ratio for fake rate will be computed
     # WJets
-    ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIWJETS} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERWJETS} --json ${JSONFILEWJETS} --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYWJETS} ${RUNINBACKGROUND} 
+    ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIWJETS} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERWJETS} --json ${JSONFILE} --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYWJETS} ${RUNINBACKGROUND} --key wjet ${DEBUG}
     #${PLOTTER} --iEcm 13 --debug --forceMerge --iLumi ${LUMIWJETS} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERWJETS} --json ${JSONFILEWJETS} --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYWJETS} ${RUNINBACKGROUND} 
     
     # QCD
-    ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIQCD} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERQCD}   --json ${JSONFILEQCD}   --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYQCD} ${RUNINBACKGROUND} 
+    ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIQCD} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERQCD}   --json ${JSONFILE}   --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYQCD} ${RUNINBACKGROUND} --key qcd ${DEBUG}
     
-    DIR="${BASEWEBDIR}_split/"
-    PLOTTERWJETS=${DIR}plotter_wjet.root
-    PLOTTERQCD=${DIR}plotter_qcd.root
-    mkdir -p ${DIR}
-    mkdir -p ~/www/temptemp/
-    mv ${DIR}*vischia*pdf ~/www/temptemp/
-    rm -r ${DIR}*
-    mv ~/www/temptemp/* ${DIR}
-    cp ~/www/HIG-13-026/index.php ${DIR}
-    JSONFILEWJETS=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/wjets_ttsplit_samples.json
-    JSONFILEQCD=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/qcd_ttsplit_samples.json
-
-    ## Create plotter files from which the ratio for fake rate will be computed
-    # WJets
-    ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIWJETS} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERWJETS} --json ${JSONFILEWJETS} --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYWJETS} ${RUNINBACKGROUND} 
-
-    # QCD
-    ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIQCD} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERQCD}   --json ${JSONFILEQCD}   --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYQCD} ${RUNINBACKGROUND} 
+    ### DIR="${BASEWEBDIR}_split/"
+    ### PLOTTERWJETS=${DIR}plotter_wjet.root
+    ### PLOTTERQCD=${DIR}plotter_qcd.root
+    ### mkdir -p ${DIR}
+    ### mkdir -p ~/www/temptemp/
+    ### mv ${DIR}*vischia*pdf ~/www/temptemp/
+    ### rm -r ${DIR}*
+    ### mv ~/www/temptemp/* ${DIR}
+    ### cp ~/www/HIG-13-026/index.php ${DIR}
+    ### JSONFILEWJETS=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/wjets_ttsplit_samples.json
+    ### JSONFILEQCD=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/qcd_ttsplit_samples.json
+    ### 
+    ### ## Create plotter files from which the ratio for fake rate will be computed
+    ### # WJets
+    ### ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIWJETS} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERWJETS} --json ${JSONFILEWJETS} --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYWJETS} ${RUNINBACKGROUND} 
+    ### 
+    ### # QCD
+    ### ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIQCD} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERQCD}   --json ${JSONFILEQCD}   --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYQCD} ${RUNINBACKGROUND} 
 
 
  
@@ -188,7 +192,7 @@ elif [ "${1}" = "merge" ]; then
 elif [ "${1}" = "harvest" ]; then
     # Fix. --plotExt does not really impact (extensions are multiple and hardcoded)
     # Configurable input directory
-    runFakeRate --inDir ${BASEWEBDIR}/ --outDir fakerate --plotExt .png
+    runFakeRate --inDir ${BASEWEBDIR}/ --outDir fakerate --plotExt .png --debug
 
 elif [ "${1}" = "runtests" ]; then
     root -l macros/ht/plotStuff.C

@@ -1,8 +1,8 @@
 {
   "proc":[
     {
-      "tag":"data",
-      "keys":["2l2v_2016", "2l2v_mcbased", "2l2v_datadriven", "2l2v_datadrivenplot", "2l2v_datadriven_SM", "2l2v_datadriven_RsGrav", "2l2v_datadriven_BulkGrav", "2l2v_datadriven_Rad", "2l2v_mcbased_SM", "2l2v_mcbased_RsGrav", "2l2v_mcbased_BulkGrav", "2l2v_mcbased_Rad","genuineMet"],
+      "tag":"data (single mu)",
+      "keys":["wjet"],
       "isdata":true,
       "color":1,
       "fill":0,
@@ -11,7 +11,18 @@
       "data":[ 
           { "dtag":"Data13TeV_SingleMu2016B"             ,  "xsec":1.0         , "br":[ 1.0 ]      , "dset":["/SingleMuon/Run2016B-PromptReco-v2/MINIAOD"]       ,  "lumiMask":"$CMSSW_BASE/src/UserCode/llvv_fwk/data/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt"   },
 	  { "dtag":"Data13TeV_SingleMu2016C"             ,  "xsec":1.0         , "br":[ 1.0 ]      , "dset":["/SingleMuon/Run2016C-PromptReco-v2/MINIAOD"]       ,  "lumiMask":"$CMSSW_BASE/src/UserCode/llvv_fwk/data/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt"   },
-	  { "dtag":"Data13TeV_SingleMu2016D"             ,  "xsec":1.0         , "br":[ 1.0 ]      , "dset":["/SingleMuon/Run2016D-PromptReco-v2/MINIAOD"]       ,  "lumiMask":"$CMSSW_BASE/src/UserCode/llvv_fwk/data/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt"   },
+	  { "dtag":"Data13TeV_SingleMu2016D"             ,  "xsec":1.0         , "br":[ 1.0 ]      , "dset":["/SingleMuon/Run2016D-PromptReco-v2/MINIAOD"]       ,  "lumiMask":"$CMSSW_BASE/src/UserCode/llvv_fwk/data/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt"   }
+      ]
+    },
+    {
+      "tag":"data (jet HT)",
+      "keys":["qcd"],
+      "isdata":true,
+      "color":1,
+      "fill":0,
+      "marker":20,
+      "msize":0.7,
+      "data":[ 
           { "dtag":"Data13TeV_JetHT2016B"             ,  "xsec":1.0         , "br":[ 1.0 ]      , "dset":["/JetHT/Run2016B-PromptReco-v2/MINIAOD"]       ,  "lumiMask":"$CMSSW_BASE/src/UserCode/llvv_fwk/data/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt"   },
 	  { "dtag":"Data13TeV_JetHT2016C"             ,  "xsec":1.0         , "br":[ 1.0 ]      , "dset":["/JetHT/Run2016C-PromptReco-v2/MINIAOD"]       ,  "lumiMask":"$CMSSW_BASE/src/UserCode/llvv_fwk/data/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt"   },
 	  { "dtag":"Data13TeV_JetHT2016D"             ,  "xsec":1.0         , "br":[ 1.0 ]      , "dset":["/JetHT/Run2016D-PromptReco-v2/MINIAOD"]       ,  "lumiMask":"$CMSSW_BASE/src/UserCode/llvv_fwk/data/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt"   }
@@ -19,7 +30,7 @@
     },
     {
       "tag":"Top",
-	"keys":["2l2v_2016", "2l2v_mcbased", "2l2v_datadriven", "2l2v_photoncontrol",  "2l2v_photonsOnly", "2l2v_datadriven_SM", "2l2v_datadriven_RsGrav", "2l2v_datadriven_BulkGrav", "2l2v_datadriven_Rad", "2l2v_mcbased_SM", "2l2v_mcbased_RsGrav", "2l2v_mcbased_BulkGrav", "2l2v_mcbased_Rad"],
+	"keys":["qcd", "wjet"],
       "isdata":false,
 	"color":8,
 	"2l2v_photonsOnly":{"suffix":"reweighted"},
@@ -35,7 +46,7 @@
     },
     {
        "tag":"W#rightarrow l#nu",
-      "keys":["2l2v_2016", "2l2v_mcbased", "2l2v_mcbased_SM", "2l2v_mcbased_RsGrav", "2l2v_mcbased_BulkGrav", "2l2v_mcbased_Rad", "2l2v_datadriven", "2l2v_datadriven_SM", "2l2v_datadriven_RsGrav", "2l2v_datadriven_BulkGrav", "2l2v_datadriven_Rad"],
+      "keys":["wjet"],
      "isdata":false,
       "color":809, 
       "data":[ 
@@ -45,8 +56,9 @@
     },
      {
      "tag":"W#rightarrow l#nu, HT>100",
-      "keys":["2l2v_2016", "2l2v_photoncontrol","2l2v_photonsOnly"],
+      "keys":["wjet"],
       "isdata":false,
+      "isinvisible":true,
       "color":809,
       "2l2v_photonsOnly":{"suffix":"reweighted"},
       "data":[
@@ -66,7 +78,7 @@
      },
     {
       "tag":"QCD, HT>100",
-      "keys":["2l2v_2016", "2l2v_photoncontrol"],      
+      "keys":["qcd", "2l2v_photoncontrol"],      
       "isdata":false,
       "color":21,
       "data":[
@@ -87,7 +99,7 @@
     },
     {
       "tag":"QCD_EMEnr",
-      "keys":["2l2v_2016", "2l2v_photoncontrol"],                                                         
+      "keys":["wjet"],   
       "isdata":false,
       "color":24,
       "data":[
@@ -104,7 +116,7 @@
     },	   
      {
       "tag":"#gamma+jets",
-      "keys":["2l2v_2016", "2l2v_photoncontrol","2l2v_mcphotonsOnly"],           
+      "keys":["qcd", "wjet"],
       "isdata":false,
       "color":390,
       "2l2v_mcphotonsOnly":{"suffix":"reweighted"},
