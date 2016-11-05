@@ -28,6 +28,7 @@
 <!--  <bin name="runTtHMuMuAnalysis"          file="tthmumu/runAnalysis.cc"></bin>-->
   
   <bin name="runTauFakesStudy"            file="taupog/runTauFakesStudy.cc"></bin>
+  <bin name="runFakeRate"                 file="taupog/runFakeRate.cc"></bin>
 
   <bin name="runHZZ2l2vAnalysis"          file="hzz2l2v/runHZZ2l2vAnalysis.cc"></bin>
 
