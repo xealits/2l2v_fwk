@@ -29,12 +29,24 @@
       ]
     },
     {
-      "tag":"Top",
-	"keys":["qcd", "wjet"],
+      "tag":"TTbar",
+	"keys":["qcd", "wjet", "ttbar"],
       "isdata":false,
 	"color":8,
 	"2l2v_photonsOnly":{"suffix":"reweighted"},
       "data":[
+        { "dtag":"MC13TeV_TTJets_powheg"                          ,  "xsec":831.76     , "br":[ 1.0 ] , "dset":["/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/MINIAODSIM"]}
+      ]
+    },
+    {
+      "tag":"Top",
+	"keys":["qcd", "wjet"],
+      "isdata":false,
+      "isinvisible":true,
+	"color":8,
+	"2l2v_photonsOnly":{"suffix":"reweighted"},
+      "data":[
+        { "dtag":"MC13TeV_TTJets_powheg"                          ,  "xsec":831.76     , "br":[ 1.0 ] , "dset":["/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/MINIAODSIM"]},
         { "dtag":"MC13TeV_TT2l2nu_ext1_2016"                      ,  "xsec":87.31      , "br":[ 1.0 ] , "dset":["/TTTo2L2Nu_13TeV-powheg/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/MINIAODSIM"]}, 
         { "dtag":"MC13TeV_SingleT_s_2016"                         ,  "xsec":3.362      , "br":[ 1.0 ] , "dset":["/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"]},
         { "dtag":"MC13TeV_SingleT_t_2016"                         ,  "xsec":70.69      , "br":[ 1.0 ] , "dset":["/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"]},

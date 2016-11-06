@@ -201,7 +201,8 @@ typedef std::vector<TauDiscriminatorSet*> TauDiscriminatorSetCollection;
 
 
 // data (single mu)
-// Top
+// TTbar
+// Top ---> no.
 // W#rightarrow l#nu
 // W#rightarrow l#nu, HT>100
 // QCD, HT>100
@@ -218,7 +219,7 @@ public:
         {
           sample_.push_back("W#rightarrow l#nu");
           sample_.push_back("QCD_EMEnr");
-          sample_.push_back("Top");
+          sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step5");
           rawname_=name_;
@@ -233,7 +234,7 @@ public:
         }
       else if(name_ == "wjet_tonly")
         {
-          sample_.push_back("Top");
+          sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step5");
           rawname_="wjet";
@@ -242,7 +243,7 @@ public:
         {
           sample_.push_back("W#rightarrow l#nu");
           sample_.push_back("QCD_EMEnr");
-          sample_.push_back("Top");
+          sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step6");
           rawname_="wjet";
@@ -257,7 +258,7 @@ public:
         }
       else if(name_ == "wjetnob_tonly")
         {
-          sample_.push_back("Top");
+          sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step6");
           rawname_="wjet";
@@ -266,7 +267,7 @@ public:
         {
           sample_.push_back("W#rightarrow l#nu");
           sample_.push_back("QCD_EMEnr");
-          sample_.push_back("Top");
+          sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step7");
           rawname_="wjet";
@@ -281,7 +282,7 @@ public:
         }
       else if(name_ == "wjetnoblepveto_tonly")
         {
-          sample_.push_back("Top");
+          sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step7");
           rawname_="wjet";
@@ -290,7 +291,7 @@ public:
         {
           sample_.push_back("W#rightarrow l#nu");
           sample_.push_back("QCD_EMEnr");
-          sample_.push_back("Top");
+          sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step8");
           rawname_="wjet";
@@ -305,7 +306,7 @@ public:
         }
       else if(name_ == "wjetnoblepjetveto_tonly")
         {
-          sample_.push_back("Top");
+          sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step8");
           rawname_="wjet";
