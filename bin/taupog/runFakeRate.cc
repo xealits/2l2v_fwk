@@ -102,7 +102,7 @@ public:
   {     
     if(name_=="CombinedIsolationDeltaBetaCorr3Hits")
       {
-        out_="hps";
+        out_="combIsoDB3Hits";
         wp_.push_back("Loose"); colour_.push_back(TColor::GetColor("#009900"));marker_.push_back(25);dataMarker_.push_back(21);
         wp_.push_back("Medium");colour_.push_back(TColor::GetColor("#ff6600"));marker_.push_back(26);dataMarker_.push_back(22);;
         wp_.push_back("Tight"); colour_.push_back(TColor::GetColor("#990099"));marker_.push_back(32);dataMarker_.push_back(23);
@@ -313,22 +313,22 @@ public:
         }
       else if(name_ == "qcd")
         {
-          sample_.push_back("t#bar{t}");
-          sample_.push_back("QCD");
+          sample_.push_back("TTbar");
+          sample_.push_back("QCD, HT>100");
           if(doData_) data_ = "JetHT data";
           step_=TString("step3");
           rawname_=name_;
         }
       else if(name_ == "qcd_qonly")
         {
-          sample_.push_back("QCD");
+          sample_.push_back("QCD, HT>100");
           if(doData_) data_ = "JetHT data";
           step_=TString("step3");
           rawname_="qcd";
         }
       else if(name_ == "qcd_tonly")
         {
-          sample_.push_back("t#bar{t}");
+          sample_.push_back("TTBar");
           if(doData_) data_ = "JetHT data";
           step_=TString("step3");
           rawname_="qcd";
@@ -499,29 +499,29 @@ int main (int argc, char *argv[])
   FakeRateAnalysisCollection analyses;
 
   // Quark-jets selection
-  analyses.push_back( new FakeRateAnalysis("wjet"      , doData) );
+  //analyses.push_back( new FakeRateAnalysis("wjet"      , doData) );
   
   // Gluon-jets selection
-  //analyses.push_back( new FakeRateAnalysis("qcd"       , doData) );
+  analyses.push_back( new FakeRateAnalysis("qcd"       , doData) );
 
-  //analyses.push_back( new FakeRateAnalysis("qcd_qonly", doData) ); // Compute fakes for wjets MC only
-  //analyses.push_back( new FakeRateAnalysis("qcd_tonly", doData) ); // Compute fakes for ttbar MC only
+  analyses.push_back( new FakeRateAnalysis("qcd_qonly", doData) ); // Compute fakes for wjets MC only
+  analyses.push_back( new FakeRateAnalysis("qcd_tonly", doData) ); // Compute fakes for ttbar MC only
 
-  analyses.push_back( new FakeRateAnalysis("wjet_wonly", doData) ); // Compute fakes for wjets MC only
-  analyses.push_back( new FakeRateAnalysis("wjet_tonly", doData) ); // Compute fakes for ttbar MC only
+  //analyses.push_back( new FakeRateAnalysis("wjet_wonly", doData) ); // Compute fakes for wjets MC only
+  //analyses.push_back( new FakeRateAnalysis("wjet_tonly", doData) ); // Compute fakes for ttbar MC only
 
-  analyses.push_back( new FakeRateAnalysis("wjetnob", doData) ); // Compute fakes for wjets MC only
-  analyses.push_back( new FakeRateAnalysis("wjetnob_tonly", doData) ); // Compute fakes for ttbar MC only
-  analyses.push_back( new FakeRateAnalysis("wjetnob_wonly", doData) ); // Compute fakes for wjets MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnob", doData) ); // Compute fakes for wjets MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnob_tonly", doData) ); // Compute fakes for ttbar MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnob_wonly", doData) ); // Compute fakes for wjets MC only
 
 
-  analyses.push_back( new FakeRateAnalysis("wjetnoblepveto", doData) ); // Compute fakes for wjets MC only
-  analyses.push_back( new FakeRateAnalysis("wjetnoblepveto_tonly", doData) ); // Compute fakes for ttbar MC only
-  analyses.push_back( new FakeRateAnalysis("wjetnoblepveto_wonly", doData) ); // Compute fakes for wjets MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnoblepveto", doData) ); // Compute fakes for wjets MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnoblepveto_tonly", doData) ); // Compute fakes for ttbar MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnoblepveto_wonly", doData) ); // Compute fakes for wjets MC only
   
-  analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto", doData) ); // Compute fakes for wjets MC only
-  analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto_tonly", doData) ); // Compute fakes for ttbar MC only
-  analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto_wonly", doData) ); // Compute fakes for wjets MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto", doData) ); // Compute fakes for wjets MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto_tonly", doData) ); // Compute fakes for ttbar MC only
+  //analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto_wonly", doData) ); // Compute fakes for wjets MC only
   
 
   FakesVariableCollection vars;
