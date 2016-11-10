@@ -536,7 +536,7 @@ int main (int argc, char *argv[])
       //
 
       //pileup weight
-      double weight(weightGen);
+      double weight(xsecWeight*weightGen);
       double TotalWeight_plus(1.0);
       double TotalWeight_minus(1.0);
       double puWeight(1.0);
