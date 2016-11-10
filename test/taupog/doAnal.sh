@@ -12,7 +12,7 @@ QUEUE=8nh
 
 OUTDIR=$CMSSW_BASE/src/UserCode/llvv_fwk/test/taupog/poggami/
 
-BASEWEBDIR=/eos/user/v/vischia/www/taufakes/
+BASEWEBDIR=/eos/user/v/vischia/www/taufakes_new/
 
 PILEUP=datapileup_2016
 
@@ -22,11 +22,11 @@ if [ "${1}" = "submit" ]; then
     ### rm -r ${OUTDIR}
     # recreate
     mkdir -p ${OUTDIR}
+    
+    KEY=" --key subnottbar "
 
-    if   [ "${2}" = "data" ]; then
-        JSONFILE=$CMSSW_BASE/src/UserCode/llvv_fwk/data/data_samples.json
-    elif [ "${2}" = "mc" ]; then
-        JSONFILE=$CMSSW_BASE/src/UserCode/llvv_fwk/data/mc_samples.json
+    if   [ "${2}" = "subttbar" ]; then
+        KEY=" --key subttbar "
     else
         echo "Keep using the base json, i.e. ${JSONFILE}"
     fi
@@ -36,7 +36,7 @@ if [ "${1}" = "submit" ]; then
 	LFN=" --lfn ${4} "
     fi
 
-    runAnalysisOverSamples.py -e runTauFakesStudy -j ${JSONFILE} -o ${OUTDIR} -d  /dummy/ -c $CMSSW_BASE/src/UserCode/llvv_fwk/test/runAnalysis_cfg.py.templ -p "@data_pileup="${PILEUP}" @useMVA=False @saveSummaryTree=False @runSystematics=False @automaticSwitch=False @is2011=False @jacknife=0 @jacks=0" ${LFN} -s ${QUEUE}
+    runAnalysisOverSamples.py -e runTauFakesStudy -j ${JSONFILE} -o ${OUTDIR} -d  /dummy/ -c $CMSSW_BASE/src/UserCode/llvv_fwk/test/runAnalysis_cfg.py.templ -p "@data_pileup="${PILEUP}" @useMVA=False @saveSummaryTree=False @runSystematics=False @automaticSwitch=False @is2011=False @jacknife=0 @jacks=0" ${LFN} -s ${QUEUE} ${KEY} --NFile 8
     
 elif [ "${1}" = "lumi" ]; then
     rm qcd_lumi.json
@@ -116,18 +116,20 @@ elif [ "${1}" = "plot" ]; then
     DEBUG=""
     DEBUG=" --debug "
     
-    PLOTTER=runFixedPlotter
-    #PLOTTER=runPlotter
+    #PLOTTER=runFixedPlotter
+    PLOTTER=runPlotter
 
 
     #INDIR=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/test/results/
     INDIR=${OUTDIR}
     PLOTTERWJETS=${DIR}plotter_wjet.root
     PLOTTERQCD=${DIR}plotter_qcd.root
-    ONLYWJETS="--onlyStartWith wjet_step6eta_denominator"
-    ONLYQCD="--onlyStartWith qcd_step2eta_denominator"
-    ONLYWJETS="--onlyStartWith wjet"
-    ONLYQCD="--onlyStartWith qcd"
+    ONLYWJETS="--only wjet_step6eta_denominator"
+    ONLYQCD="--only qcd_step2eta_denominator"
+    #ONLYWJETS=' --only "wjet_.*" '
+    #ONLYQCD=' --only "qcd_.*" '
+    ONLYWJETS=' '
+    ONLYQCD=' '
     PLOTEXT=" --plotExt .png --plotExt .pdf --plotExt .C "
     
     #MERGE="--forceMerge"
@@ -193,6 +195,7 @@ elif [ "${1}" = "harvest" ]; then
     # Fix. --plotExt does not really impact (extensions are multiple and hardcoded)
     # Configurable input directory
     runFakeRate --inDir ${BASEWEBDIR}/ --outDir fakerate --plotExt .png --debug
+    #--debug
 
 elif [ "${1}" = "runtests" ]; then
     root -l macros/ht/plotStuff.C
