@@ -52,6 +52,7 @@ double iEcm=8;
 bool showChi2 = false;
 bool showUnc=false;
 double baseRelUnc=0.027;
+vector<string> compute;
 bool noLog=false;
 bool logX=false;
 bool isSim=false;
@@ -82,17 +83,6 @@ Double_t ptbins[20] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90., 100., 1
 class TauDiscriminatorSet {
   
 public:
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -208,6 +198,7 @@ typedef std::vector<TauDiscriminatorSet*> TauDiscriminatorSetCollection;
 // QCD, HT>100
 // QCD_EMEnr
 // #gamma+jets;1#gamma+jets
+
 
 class FakeRateAnalysis {
 public:
@@ -380,6 +371,53 @@ private:
 
 typedef std::vector<FakesVariable*> FakesVariableCollection;
 
+
+void buildAnalysesCollection(FakeRateAnalysisCollection& analyses)
+{
+
+  for(std::vector<string>::iterator icomp=compute.begin(); icomp!=compute.end(); ++icomp)
+    {
+
+      string comp = *icomp;
+      if(comp.find("wjet")!=string::npos || comp.find("all")!=string::npos)
+        {
+          // Quark-jets selection
+          analyses.push_back( new FakeRateAnalysis("wjet"      , doData) );
+          analyses.push_back( new FakeRateAnalysis("wjet_wonly", doData) ); // Compute fakes for wjets MC only
+          analyses.push_back( new FakeRateAnalysis("wjet_tonly", doData) ); // Compute fakes for ttbar MC only
+
+          if(comp.find("wjetnob")!=string::npos || comp.find("all")!=string::npos)
+            {
+              analyses.push_back( new FakeRateAnalysis("wjetnob", doData) ); // Compute fakes for wjets MC only
+              analyses.push_back( new FakeRateAnalysis("wjetnob_tonly", doData) ); // Compute fakes for ttbar MC only
+              analyses.push_back( new FakeRateAnalysis("wjetnob_wonly", doData) ); // Compute fakes for wjets MC only
+              
+              if(comp.find("wjetnoblepveto")!=string::npos || comp.find("all")!=string::npos)
+                {
+                  analyses.push_back( new FakeRateAnalysis("wjetnoblepveto", doData) ); // Compute fakes for wjets MC only
+                  analyses.push_back( new FakeRateAnalysis("wjetnoblepveto_tonly", doData) ); // Compute fakes for ttbar MC only
+                  analyses.push_back( new FakeRateAnalysis("wjetnoblepveto_wonly", doData) ); // Compute fakes for wjets MC only
+                }
+              
+              if(comp.find("wjetnob")!=string::npos || comp.find("all")!=string::npos)
+                {
+                  analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto", doData) ); // Compute fakes for wjets MC only
+                  analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto_tonly", doData) ); // Compute fakes for ttbar MC only
+                  analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto_wonly", doData) ); // Compute fakes for wjets MC only
+                }
+            }
+        }
+      if(comp=="qcd" || comp=="all")
+        {
+          // Gluon-jets selection
+          analyses.push_back( new FakeRateAnalysis("qcd"       , doData) );
+          analyses.push_back( new FakeRateAnalysis("qcd_qonly", doData) ); // Compute fakes for wjets MC only
+          analyses.push_back( new FakeRateAnalysis("qcd_tonly", doData) ); // Compute fakes for ttbar MC only
+        }
+    }
+  return;
+}
+
 int main (int argc, char *argv[])
 {
   
@@ -417,6 +455,7 @@ int main (int argc, char *argv[])
       printf("--outDir  --> path of the directory that will contains the output plots and tables\n");
       printf("--outFile --> path of the output summary .root file\n");
       printf("--json    --> containing list of process (and associated style) to process to process\n");
+      printf("--compute --> Compute for wjet or qcd (comma separated list)\n");
       printf("--onlyContain    --> processing only the objects containing the following argument in their name\n");
       printf("--onlyStartWith  --> processing only the objects starting with the following argument in their name\n");
       printf("--index   --> will do the projection on that index for histos of type cutIndex\n");
@@ -472,6 +511,16 @@ int main (int argc, char *argv[])
     if(arg.find("--jodorStyle")!=string::npos){ jodorStyle = true;  }
     if(arg.find("--generatePseudoData")!=string::npos){ generatePseudoData = true; }
     if(arg.find("--noLog")!=string::npos){ noLog = true;    }
+    if(arg.find("--compute")!=string::npos)
+      {
+        stringstream ss(argv[i+1]);
+        while( ss.good() )
+          {
+            string substr;
+            getline( ss, substr, ',' );
+            compute.push_back( substr );
+          }
+      }
     if(arg.find("--logX")!=string::npos){ logX = true;    }
     if(arg.find("--no2D"  )!=string::npos){ do2D = false;    }
     if(arg.find("--no1D"  )!=string::npos){ do1D = false;    }
@@ -498,31 +547,8 @@ int main (int argc, char *argv[])
   
   FakeRateAnalysisCollection analyses;
 
-  // Quark-jets selection
-  //analyses.push_back( new FakeRateAnalysis("wjet"      , doData) );
   
-  // Gluon-jets selection
-  analyses.push_back( new FakeRateAnalysis("qcd"       , doData) );
-
-  analyses.push_back( new FakeRateAnalysis("qcd_qonly", doData) ); // Compute fakes for wjets MC only
-  analyses.push_back( new FakeRateAnalysis("qcd_tonly", doData) ); // Compute fakes for ttbar MC only
-
-  //analyses.push_back( new FakeRateAnalysis("wjet_wonly", doData) ); // Compute fakes for wjets MC only
-  //analyses.push_back( new FakeRateAnalysis("wjet_tonly", doData) ); // Compute fakes for ttbar MC only
-
-  //analyses.push_back( new FakeRateAnalysis("wjetnob", doData) ); // Compute fakes for wjets MC only
-  //analyses.push_back( new FakeRateAnalysis("wjetnob_tonly", doData) ); // Compute fakes for ttbar MC only
-  //analyses.push_back( new FakeRateAnalysis("wjetnob_wonly", doData) ); // Compute fakes for wjets MC only
-
-
-  //analyses.push_back( new FakeRateAnalysis("wjetnoblepveto", doData) ); // Compute fakes for wjets MC only
-  //analyses.push_back( new FakeRateAnalysis("wjetnoblepveto_tonly", doData) ); // Compute fakes for ttbar MC only
-  //analyses.push_back( new FakeRateAnalysis("wjetnoblepveto_wonly", doData) ); // Compute fakes for wjets MC only
-  
-  //analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto", doData) ); // Compute fakes for wjets MC only
-  //analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto_tonly", doData) ); // Compute fakes for ttbar MC only
-  //analyses.push_back( new FakeRateAnalysis("wjetnoblepjetveto_wonly", doData) ); // Compute fakes for wjets MC only
-  
+  buildAnalysesCollection(analyses);
 
   FakesVariableCollection vars;
   vars.push_back( new FakesVariable("pt"     , 1) );

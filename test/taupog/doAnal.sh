@@ -194,7 +194,11 @@ elif [ "${1}" = "merge" ]; then
 elif [ "${1}" = "harvest" ]; then
     # Fix. --plotExt does not really impact (extensions are multiple and hardcoded)
     # Configurable input directory
-    runFakeRate --inDir ${BASEWEBDIR}/ --outDir fakerate --plotExt .png --debug
+    COMPUTE="${2}"
+    if [ "${COMPUTE}" = "" ]; then
+        COMPUTE="all"
+    fi
+    runFakeRate --inDir ${BASEWEBDIR}/ --outDir fakerate --plotExt .png --debug --compute ${COMPUTE}
     #--debug
 
 elif [ "${1}" = "runtests" ]; then
