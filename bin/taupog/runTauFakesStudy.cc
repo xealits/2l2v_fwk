@@ -206,14 +206,6 @@ int main (int argc, char *argv[])
       varNames.push_back ("_lesup" ); varNames.push_back ("_lesdown" );
       varNames.push_back ("_puup"  ); varNames.push_back ("_pudown"  );
       varNames.push_back ("_btagup"); varNames.push_back ("_btagdown");
-      //if (isMC_ZZ)
-      //  {
-      //    varNames.push_back ("_zzptup"); varNames.push_back ("_zzptdown");
-      //  }
-      //if (isMC_WZ)
-      //  {
-      //    varNames.push_back ("_wzptup"); varNames.push_back ("_wzptdown");
-      //  }
     }
   
   size_t nvarsToInclude = varNames.size ();
@@ -226,10 +218,7 @@ int main (int argc, char *argv[])
   //##############################################
   SmartSelectionMonitor mon;
 
-  //generator level control : add an underflow entry to make sure the histo is kept
-  //((TH1F*)mon.addHistogram( new TH1D( "higgsMass_raw",     ";Higgs Mass [GeV];Events", 500,0,1500) ))->Fill(-1.0,0.0001);
-
-  // ensure proper normalization                                                                                                                                                               
+  // ensure proper normalization                                                                                                        
   TH1D* normhist = (TH1D*) mon.addHistogram(new TH1D("initNorm", ";;Nev", 5,0.,5.));
   normhist->GetXaxis()->SetBinLabel (1, "Gen. Events");
   normhist->GetXaxis()->SetBinLabel (2, "Events");
@@ -440,7 +429,7 @@ int main (int argc, char *argv[])
       std::vector < float >mcPileupDistribution;
 
       double totalNumEvent = utils::getMCPileupDistributionAndTotalEventFromMiniAOD(urls, dataPileupDistribution.size(), mcPileupDistribution);
-      xsecWeight/=totalNumEvent;
+      xsecWeight=xsec/totalNumEvent;
 
       //utils::getMCPileupDistributionFromMiniAOD(urls, dataPileupDistribution.size (), mcPileupDistribution);
       while (mcPileupDistribution.size () < dataPileupDistribution.size ()) mcPileupDistribution.push_back (0.0);
