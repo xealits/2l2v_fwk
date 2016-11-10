@@ -2,7 +2,7 @@
   "proc":[
     {
       "tag":"data (single mu)",
-      "keys":["wjet"],
+      "keys":["wjet", "subnottbar"],
       "isdata":true,
       "color":1,
       "fill":0,
@@ -16,7 +16,7 @@
     },
     {
       "tag":"data (jet HT)",
-      "keys":["qcd"],
+      "keys":["qcd", "subnottbar"],
       "isdata":true,
       "color":1,
       "fill":0,
@@ -30,7 +30,7 @@
     },
     {
       "tag":"TTbar",
-	"keys":["qcd", "wjet", "ttbar"],
+	"keys":["qcd", "wjet", "subttbar"],
       "isdata":false,
 	"color":8,
 	"2l2v_photonsOnly":{"suffix":"reweighted"},
@@ -40,7 +40,7 @@
     },
     {
       "tag":"Top",
-	"keys":["noqcd", "nowjet"],
+	"keys":["noqcd", "nowjet", "noSubnottbar"],
       "isdata":false,
       "isinvisible":true,
 	"color":8,
@@ -57,7 +57,7 @@
     },
     {
        "tag":"W#rightarrow l#nu",
-      "keys":["wjet"],
+      "keys":["nowjet", "subnottbar"],
      "isdata":false,
       "color":809, 
       "data":[ 
@@ -66,8 +66,8 @@
       ]
     },
      {
-     "tag":"W#rightarrow l#nu, HT>100",
-      "keys":["nowjet"],
+     "tag":"W#rightarrow l#nu",
+      "keys":["wjet", "subnottbar"],
       "isdata":false,
       "isinvisible":true,
       "color":809,
@@ -84,7 +84,7 @@
      },
     {
       "tag":"QCD, HT>100",
-      "keys":["qcd", "2l2v_photoncontrol"],      
+      "keys":["qcd", "2l2v_photoncontrol", "subnottbar"],      
       "isdata":false,
       "color":21,
       "data":[
@@ -100,7 +100,7 @@
     },
     {
       "tag":"QCD_EMEnr_PtBinned",
-      "keys":["wjet"],   
+      "keys":["wjet", "subnottbar"],   
       "isdata":false,
       "color":24,
       "data":[
@@ -115,7 +115,7 @@
     },	   
     {
       "tag":"QCD_EMEnr_Incl",
-      "keys":["nowjet"],   
+      "keys":["nowjet", "subnottbar"],   
       "isdata":false,
       "color":24,
       "data":[
@@ -124,7 +124,7 @@
     },	   
      {
       "tag":"#gamma+jets",
-      "keys":["noqcd", "nowjet"],
+      "keys":["noqcd", "nowjet", "subnottbar"],
       "isdata":false,
       "color":390,
       "2l2v_mcphotonsOnly":{"suffix":"reweighted"},
