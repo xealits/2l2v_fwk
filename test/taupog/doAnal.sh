@@ -25,8 +25,8 @@ if [ "${1}" = "submit" ]; then
     
     KEY=" --key subnottbar "
 
-    if   [ "${2}" = "subttbar" ]; then
-        KEY=" --key subttbar "
+    if   [ "${2}" != "" ]; then
+        KEY=" --key ${2} "
     else
         echo "Keep using the base json, i.e. ${JSONFILE}"
     fi
@@ -130,6 +130,8 @@ elif [ "${1}" = "plot" ]; then
     #ONLYQCD=' --only "qcd_.*" '
     ONLYWJETS=' '
     ONLYQCD=' '
+    #ONLYWJETS="--only wjet_wjet_eventflow"
+    #ONLYQCD="--only qcd_qcd_eventflow"
     PLOTEXT=" --plotExt .png --plotExt .pdf --plotExt .C "
     
     #MERGE="--forceMerge"
