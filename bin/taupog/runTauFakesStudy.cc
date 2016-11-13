@@ -381,34 +381,22 @@ int main (int argc, char *argv[])
   double leff (0.13), sfl (1.05), sflunc (0.12);
 
   // b-tagging working points
-  // TODO: in 74X switch to pfCombined.... (based on pf candidates instead of tracks) (recommended)
-  // Apparently this V2 has the following preliminary operating points:
-  // These preliminary operating points were derived from ttbar events:
-  //   - Loose : 0.423 (corresponding to 10.1716% DUSG mistag efficiency)
-  //   - Medium : 0.814 (corresponding to 1.0623% DUSG mistag efficiency)
-  //   - Tight : 0.941 (corresponding to 0.1144% DUSG mistag efficiency)
-  
-  // New recommendations for 50ns https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation74X50ns
-  //   (pfC|c)ombinedInclusiveSecondaryVertexV2BJetTags
-  //      v2CSVv2L 0.605
-  //      v2CSVv2M 0.890
-  //      v2CSVv2T 0.970
+  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80X
   double
-    btagLoose(0.605),
-    btagMedium(0.890),
-    btagTight(0.970);
+    btagLoose(0.460),
+    btagMedium(0.800),
+    btagTight(0.935);
   
-    BTagCalibration btagCalib("CSVv2", string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/weights/btagSF_CSVv2.csv");
-  BTagCalibrationReader btagCal   (&btagCalib, BTagEntry::OP_MEDIUM, "mujets", "central");  // calibration instance, operating point, measurement type, systematics type
-  BTagCalibrationReader btagCalUp (&btagCalib, BTagEntry::OP_MEDIUM, "mujets", "up"     );  // sys up
-  BTagCalibrationReader btagCalDn (&btagCalib, BTagEntry::OP_MEDIUM, "mujets", "down"   );  // sys down
-  BTagCalibrationReader btagCalL  (&btagCalib, BTagEntry::OP_MEDIUM, "comb", "central");  // calibration instance, operating point, measurement type, systematics type
-  BTagCalibrationReader btagCalLUp(&btagCalib, BTagEntry::OP_MEDIUM, "comb", "up"     );  // sys up
-  BTagCalibrationReader btagCalLDn(&btagCalib, BTagEntry::OP_MEDIUM, "comb", "down"   );  // sys down
+  // setup calibration readers 80X
+  BTagCalibration btagCalib("CSVv2", string(std::getenv("CMSSW_BASE"))+"/src/UserCode/llvv_fwk/data/weights/CSVv2_ichep.csv");
 
-  // from Btag SF and eff from https://indico.cern.ch/event/437675/#preview:1629681
-  //beff = 0.747; sfb = 0.899; //for Loose WP  //sfb is not actually used as it's taken from btagCal
+  BTagCalibrationReader80X btagCal80X   (BTagEntry::OP_LOOSE, "central", {"up", "down"});
+  btagCal80X.load(btagCalib, BTagEntry::FLAV_B, "comb");
+  btagCal80X.load(btagCalib, BTagEntry::FLAV_C, "comb");
+  btagCal80X.load(btagCalib, BTagEntry::FLAV_UDSG, "incl");
 
+  beff = 0.836; sfb = 0.920; //for Loose WP  //sfb is from page 7 https://indico.cern.ch/event/557018/contributions/2246312/attachments/1310986/1961665/csvSF_rwt_July18th_2016.pdf 
+  leff = 0.139;  
 
 
   //MC normalization (to 1/pb)
@@ -976,15 +964,33 @@ int main (int argc, char *argv[])
           if(isMC){
             int flavId=jets[ijet].partonFlavour();  double eta=jets[ijet].eta();
             btsfutil.SetSeed(ev.eventAuxiliary().event()*10 + ijet*10000);
-            if      (abs(flavId)==5){  btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal   .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
-              btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalUp .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
-              btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalDn .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
-            }else if(abs(flavId)==4){  btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal   .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
-              btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalUp .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
-              btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalDn .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
-            }else{                     btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCalL  .eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
-              btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalLUp.eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
-              btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalLDn.eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
+                  if      (abs(flavId)==5){  
+					//  74X recommendation
+					//     btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal   .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+                                        //     btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalUp .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+                                        //     btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalDn .eval(BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+                                        //  80X recommendation
+                                        btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal80X.eval_auto_bounds("central", BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+                                        btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCal80X.eval_auto_bounds("up", BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+                                        btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCal80X.eval_auto_bounds("down", BTagEntry::FLAV_B   , eta, jets[ijet].pt()), beff);
+                  }else if(abs(flavId)==4){  
+					//  74X recommendation
+					//     btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal   .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+					//     btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalUp .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+					//     btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalDn .eval(BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+                                        //  80X recommendation
+			                btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal80X.eval_auto_bounds("central", BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+                                        btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCal80X.eval_auto_bounds("up", BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+                                        btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCal80X.eval_auto_bounds("down", BTagEntry::FLAV_C   , eta, jets[ijet].pt()), beff);
+                  }else{                
+					//  74X recommendation 
+					//     btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCalL  .eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
+                                        //     btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCalLUp.eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
+                                        //     btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCalLDn.eval(BTagEntry::FLAV_UDSG, eta, jets[ijet].pt()), leff);
+                                        //  80X recommendation
+			                btsfutil.modifyBTagsWithSF(hasCSVtag    , btagCal80X.eval_auto_bounds("central", BTagEntry::FLAV_UDSG   , eta, jets[ijet].pt()), leff);
+                                        btsfutil.modifyBTagsWithSF(hasCSVtagUp  , btagCal80X.eval_auto_bounds("up", BTagEntry::FLAV_UDSG   , eta, jets[ijet].pt()), leff);
+                                        btsfutil.modifyBTagsWithSF(hasCSVtagDown, btagCal80X.eval_auto_bounds("down", BTagEntry::FLAV_UDSG   , eta, jets[ijet].pt()), leff);
             }
           }
 
