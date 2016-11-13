@@ -1105,7 +1105,7 @@ int main (int argc, char *argv[])
           }
         }
         // At least one of the jets is required to be matched with the one firing HLT
-        if(jetsFiring==0) passJet=false;
+        if(!isMC && jetsFiring==0) passJet=false;
         
         // Lepton veto, like a boss
         bool passLepton(selLeptons.size()==0 && nVetoLeptons==0); 
@@ -1134,7 +1134,7 @@ int main (int argc, char *argv[])
               
               // Multi-jet event: the trigger jet is excluded from the fake rate computation if there is only one jet that passes the trigger requirement
               // In case more than one jet passes the requirement, all are used
-              if(jetsFiring==1)
+              if(!isMC && jetsFiring==1)
                 {
                   if(jet->eta() == fireEta && jet->phi() == firePhi) continue; // Skip the firing jet if it is the only one passing the trigger requirement
                 }
