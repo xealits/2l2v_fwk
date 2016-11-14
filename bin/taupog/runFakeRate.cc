@@ -208,8 +208,8 @@ public:
   {
       if(name_ == "wjet")
         {
-          sample_.push_back("W#rightarrow l#nu");
-          sample_.push_back("QCD_EMEnr");
+          sample_.push_back("W#rightarrow l#nu inclusive");
+          sample_.push_back("QCD_EMEnr_Incl");
           sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step5");
@@ -217,8 +217,8 @@ public:
         }
       else if(name_ == "wjet_wonly")
         {
-          sample_.push_back("W#rightarrow l#nu");
-          sample_.push_back("QCD_EMEnr");
+          sample_.push_back("W#rightarrow l#nu inclusive");
+          sample_.push_back("QCD_EMEnr_Incl");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step5");
           rawname_="wjet";
@@ -232,8 +232,8 @@ public:
         }
       else if(name_ == "wjetnob")
         {
-          sample_.push_back("W#rightarrow l#nu");
-          sample_.push_back("QCD_EMEnr");
+          sample_.push_back("W#rightarrow l#nu inclusive");
+          sample_.push_back("QCD_EMEnr_Incl");
           sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step6");
@@ -241,8 +241,8 @@ public:
         }
       else if(name_ == "wjetnob_wonly")
         {
-          sample_.push_back("W#rightarrow l#nu");
-          sample_.push_back("QCD_EMEnr");
+          sample_.push_back("W#rightarrow l#nu inclusive");
+          sample_.push_back("QCD_EMEnr_Incl");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step6");
           rawname_="wjet";
@@ -256,8 +256,8 @@ public:
         }
       else if(name_ == "wjetnoblepveto")
         {
-          sample_.push_back("W#rightarrow l#nu");
-          sample_.push_back("QCD_EMEnr");
+          sample_.push_back("W#rightarrow l#nu inclusive");
+          sample_.push_back("QCD_EMEnr_Incl");
           sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step7");
@@ -265,8 +265,8 @@ public:
         }
       else if(name_ == "wjetnoblepveto_wonly")
         {
-          sample_.push_back("W#rightarrow l#nu");
-          sample_.push_back("QCD_EMEnr");
+          sample_.push_back("W#rightarrow l#nu inclusive");
+          sample_.push_back("QCD_EMEnr_Incl");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step7");
           rawname_="wjet";
@@ -280,8 +280,8 @@ public:
         }
       else if(name_ == "wjetnoblepjetveto")
         {
-          sample_.push_back("W#rightarrow l#nu");
-          sample_.push_back("QCD_EMEnr");
+          sample_.push_back("W#rightarrow l#nu inclusive");
+          sample_.push_back("QCD_EMEnr_Incl");
           sample_.push_back("TTbar");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step8");
@@ -289,8 +289,8 @@ public:
         }
       else if(name_ == "wjetnoblepjetveto_wonly")
         {
-          sample_.push_back("W#rightarrow l#nu");
-          sample_.push_back("QCD_EMEnr");
+          sample_.push_back("W#rightarrow l#nu inclusive");
+          sample_.push_back("QCD_EMEnr_Incl");
           if(doData_) data_ = "data (single mu)";
           step_=TString("step8");
           rawname_="wjet";

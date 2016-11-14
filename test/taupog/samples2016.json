@@ -40,11 +40,9 @@
     },
     {
       "tag":"Top",
-	"keys":["noqcd", "nowjet", "noSubnottbar"],
+      "keys":["noSubnottbar"],
       "isdata":false,
-      "isinvisible":true,
-	"color":8,
-	"2l2v_photonsOnly":{"suffix":"reweighted"},
+      "color":8,
       "data":[
         { "dtag":"MC13TeV_TT2l2nu_ext1_2016"                      ,  "xsec":87.31      , "br":[ 1.0 ] , "dset":["/TTTo2L2Nu_13TeV-powheg/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/MINIAODSIM"]}, 
         { "dtag":"MC13TeV_SingleT_s_2016"                         ,  "xsec":3.362      , "br":[ 1.0 ] , "dset":["/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"]},
@@ -56,20 +54,18 @@
       ]
     },
     {
-       "tag":"W#rightarrow l#nu",
-      "keys":["nowjet", "subnottbar"],
-     "isdata":false,
+      "tag":"W#rightarrow l#nu inclusive",
+      "keys":["incljets", "wjet", "subnottbar"],
+      "isdata":false,
       "color":809, 
       "data":[ 
-        { "dtag":"MC13TeV_WJets_NLO"                            ,  "xsec":61526.7       , "br":[ 0.15 ]  , "dset":["/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"]},
-	{ "dtag":"MC13TeV_WJets_NLO_ext1"                            ,  "xsec":61526.7       , "br":[ 0.85 ]  , "dset":["/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/MINIAODSIM"]}
+        { "dtag":"MC13TeV_WJets_NLO"                            ,  "xsec":61526.7       , "br":[ 0.15 ]  , "dset":["/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM", "/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/MINIAODSIM"]}
       ]
     },
      {
-     "tag":"W#rightarrow l#nu",
-      "keys":["wjet", "subnottbar"],
+     "tag":"W#rightarrow l#nuKKK",
+      "keys":["subnottbar"],
       "isdata":false,
-      "isinvisible":true,
       "color":809,
       "2l2v_photonsOnly":{"suffix":"reweighted"},
       "data":[
@@ -84,7 +80,7 @@
      },
     {
       "tag":"QCD, HT>100",
-      "keys":["qcd", "2l2v_photoncontrol", "subnottbar"],      
+      "keys":["qcd", "subnottbar"],      
       "isdata":false,
       "color":21,
       "data":[
@@ -100,7 +96,7 @@
     },
     {
       "tag":"QCD_EMEnr_PtBinned",
-      "keys":["wjet", "subnottbar"],   
+      "keys":["subnottbar"],   
       "isdata":false,
       "color":24,
       "data":[
@@ -115,7 +111,7 @@
     },	   
     {
       "tag":"QCD_EMEnr_Incl",
-      "keys":["nowjet", "subnottbar"],   
+      "keys":["wjet", "subnottbar"],   
       "isdata":false,
       "color":24,
       "data":[
@@ -124,7 +120,7 @@
     },	   
      {
       "tag":"#gamma+jets",
-      "keys":["noqcd", "nowjet", "subnottbar"],
+      "keys":["subnottbar"],
       "isdata":false,
       "color":390,
       "2l2v_mcphotonsOnly":{"suffix":"reweighted"},
