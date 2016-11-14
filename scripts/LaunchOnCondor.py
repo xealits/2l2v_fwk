@@ -329,7 +329,11 @@ def AddJobToCmdFile():
 
         absoluteShellPath = Path_Shell;
         if(not os.path.isabs(absoluteShellPath)): absoluteShellPath= os.getcwd() + "/" + absoluteShellPath
-        cmd_file.write("qsub " + queue + absoluteShellPath + "\n")
+        hostname = os.getenv("HOSTNAME", "")
+        if('ifca.es' in hostname): 
+            cmd_file.write("qsub -P l.gaes " + queue + absoluteShellPath + "\n")
+        else:
+            cmd_file.write("qsub " + queue + absoluteShellPath + "\n")
     elif subTool=='crab':
         crabWorkDirPath = Farm_Directories[1]
         crabConfigPath  = Farm_Directories[1]+'crabConfig_'+Jobs_Index+Jobs_Name+'_cfg.py'
@@ -396,6 +400,7 @@ def SendCluster_Create(FarmDirectory, JobName):
         if( commands.getstatusoutput("ls /gstore/t3cms" )[1].find("store")==0): qbatchTestCommand="qstat"
         if( 'iihe.ac.be' in hostname): qbatchTestCommand="qstat"
         if( 'uniovi.es'  in hostname): qbatchTestCommand='qstat'
+        if( 'ifca.es'    in hostname): qbatchTestCommand='qstat'
         if(  commands.getstatusoutput("bjobs"          )[1].find("command not found")<0):   subTool = 'bsub'
         elif(commands.getstatusoutput(qbatchTestCommand)[1].find("command not found")<0):   subTool = 'qsub'
         else:                                                                               subTool = 'condor'
