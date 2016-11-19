@@ -97,23 +97,27 @@ elif [ "${1}" = "plot" ]; then
     PLOTTER=runPlotter
 
 
-    #ONLYWJETS="--only (wjet_wjet_eventflow|    )"
-    #ONLYQCD="--only   (qcd_qcd_eventflow|      )"
-
     echo "Now creating the masks"
 
-    VARIABLES="pt|met|eta|radius|nvtx"
-    WPS="Loose|Medium|Tight"
-    DISCRIMINATORS="CombinedIsolationDeltaBetaCorr3Hits|IsolationMVArun2v1DBdR03oldDMwLT|IsolationMVArun2v1DBnewDMwLT|IsolationMVArun2v1DBoldDMwLT|IsolationMVArun2v1PWdR03oldDMwLT|IsolationMVArun2v1PWnewDMwLT|IsolationMVArun2v1PWoldDMwLT"
-    VARIABLES="pt|eta"
-    DISCRIMINATORS="CombinedIsolationDeltaBetaCorr3Hits"
-
     # Breaker, lol
+    #VARIABLES="pt|met|eta|radius|nvtx"
+    #WPS="Loose|Medium|Tight"
+    #DISCRIMINATORS="CombinedIsolationDeltaBetaCorr3Hits|IsolationMVArun2v1DBdR03oldDMwLT|IsolationMVArun2v1DBnewDMwLT|IsolationMVArun2v1DBoldDMwLT|IsolationMVArun2v1PWdR03oldDMwLT|IsolationMVArun2v1PWnewDMwLT|IsolationMVArun2v1PWoldDMwLT"
     #ONLYWJETS=' --only "wjet_(step5|step6|step7|step8)(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)" '
     #ONLYQCD=' --only "qcd_step3(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)" '
 
-    ONLYWJETS=" --only \"wjet_(step5|step6|step7|step8)(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)\" "
-    ONLYQCD=" --only \"qcd_step3(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator))|((${VARIABLES})_denominator)\" "
+    #ONLYWJETS="--only (wjet_wjet_eventflow|    )"
+    #ONLYQCD="--only   (qcd_qcd_eventflow|      )"
+
+
+    VARIABLES="(pt|met|eta|radius|nvtx)"
+    WPS="(Loose|Medium|Tight)"
+    DISCRIMINATORS="(CombinedIsolationDeltaBetaCorr3Hits|IsolationMVArun2v1DBdR03oldDMwLT|IsolationMVArun2v1DBnewDMwLT|IsolationMVArun2v1DBoldDMwLT|IsolationMVArun2v1PWdR03oldDMwLT|IsolationMVArun2v1PWnewDMwLT|IsolationMVArun2v1PWoldDMwLT)"
+    DISCRIMINATORS="CombinedIsolationDeltaBetaCorr3Hits"
+    STEP="(step5|step6|step7|step8)"
+
+    ONLYWJETS=" --only wjet_${STEP}(by${WPS}${DISCRIMINATORS}${VARIABLES}_numerator|${VARIABLES}_denominator) "
+    ONLYQCD=" --only qcd_step3(by${WPS}${DISCRIMINATORS}${VARIABLES}_numerator|${VARIABLES}_denominator) "
     
     echo "Masks created"
     echo ${ONLYWJETS}
@@ -124,12 +128,6 @@ elif [ "${1}" = "plot" ]; then
     INDIR=${OUTDIR}
     PLOTTERWJETS=${DIR}plotter_wjet.root
     PLOTTERQCD=${DIR}plotter_qcd.root
-    #ONLYWJETS="--only wjet_step6eta_denominator"
-    #ONLYQCD="--only qcd_step2eta_denominator"
-    #ONLYWJETS=' --only "wjet_*" '
-    #ONLYQCD=' --only "qcd_*" '
-    ONLYWJETS=' '
-    ONLYQCD=' '
     #ONLYWJETS="--only wjet_wjet_eventflow"
     #ONLYQCD="--only qcd_qcd_eventflow"
     PLOTEXT=" --plotExt .png --plotExt .pdf --plotExt .C "
