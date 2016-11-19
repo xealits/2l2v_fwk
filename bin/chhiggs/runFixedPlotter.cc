@@ -1220,6 +1220,7 @@ int main(int argc, char* argv[]){
         printf("--splitCanvas --> (only for 2D plots) save all the samples in separated pltos\n");
         printf("--forceMerge --> merge splitted samples\n");
 	printf("--useMerged --> use merged splitted samples\n");
+	printf("--debug --> debug output\n");
 	printf("--jodorStyle --> use plotting style requested from Jodor");
         printf("--generatePseudoData --> generate pseudo-data by poisson-smearing the total SM MC distribution");
         
@@ -1254,6 +1255,7 @@ int main(int argc, char* argv[]){
      if(arg.find("--isSim")!=string::npos){ isSim = true;    }
      if(arg.find("--forceMerge")!=string::npos){ forceMerge = true;  useMerged=true;  }
      if(arg.find("--useMerged")!=string::npos){ useMerged = true;    }
+     if(arg.find("--debug")!=string::npos){ debug = true;    }
      if(arg.find("--jodorStyle")!=string::npos){ jodorStyle = true;  }
      if(arg.find("--generatePseudoData")!=string::npos){ generatePseudoData = true; }
      if(arg.find("--noLog")!=string::npos){ noLog = true;    }
