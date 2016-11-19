@@ -105,6 +105,8 @@ elif [ "${1}" = "plot" ]; then
     VARIABLES="pt|met|eta|radius|nvtx"
     WPS="Loose|Medium|Tight"
     DISCRIMINATORS="CombinedIsolationDeltaBetaCorr3Hits|IsolationMVArun2v1DBdR03oldDMwLT|IsolationMVArun2v1DBnewDMwLT|IsolationMVArun2v1DBoldDMwLT|IsolationMVArun2v1PWdR03oldDMwLT|IsolationMVArun2v1PWnewDMwLT|IsolationMVArun2v1PWoldDMwLT"
+    VARIABLES="pt|eta"
+    DISCRIMINATORS="CombinedIsolationDeltaBetaCorr3Hits"
 
     # Breaker, lol
     #ONLYWJETS=' --only "wjet_(step5|step6|step7|step8)(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)" '
