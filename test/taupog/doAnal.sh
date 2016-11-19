@@ -145,27 +145,37 @@ elif [ "${1}" = "plot" ]; then
     PLOTTER=runPlotter
 
 
-    ONLYWJETS="--only (wjet_wjet_eventflow|    )"
-    ONLYQCD="--only   (qcd_qcd_eventflow|      )"
+    #ONLYWJETS="--only (wjet_wjet_eventflow|    )"
+    #ONLYQCD="--only   (qcd_qcd_eventflow|      )"
+
+    echo "Now creating the masks"
 
     VARIABLES="pt|met|eta|radius|nvtx"
     WPS="Loose|Medium|Tight"
     DISCRIMINATORS="CombinedIsolationDeltaBetaCorr3Hits|IsolationMVArun2v1DBdR03oldDMwLT|IsolationMVArun2v1DBnewDMwLT|IsolationMVArun2v1DBoldDMwLT|IsolationMVArun2v1PWdR03oldDMwLT|IsolationMVArun2v1PWnewDMwLT|IsolationMVArun2v1PWoldDMwLT"
+
+    # Breaker, lol
+    #ONLYWJETS=' --only "wjet_(step5|step6|step7|step8)(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)" '
+    #ONLYQCD=' --only "qcd_step3(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)" '
+
+    ONLYWJETS=" --only \"wjet_(step5|step6|step7|step8)(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)\" "
+    ONLYQCD=" --only \"qcd_step3(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator))|((${VARIABLES})_denominator)\" "
     
-    ONLYWJETS=' --only "wjet_(step5|step6|step7|step8)(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)" '
-    ONLYQCD=' --only "qcd_step3(((by(${WPS})(${DISCRIMINATORS}))(${VARIABLES})_numerator)|(${VARIABLES})_denominator)" '
-    
-    
+    echo "Masks created"
+    echo ${ONLYWJETS}
+    echo ${ONLYQCD}
+
+    echo "Now plotting"
     #INDIR=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/test/results/
     INDIR=${OUTDIR}
     PLOTTERWJETS=${DIR}plotter_wjet.root
     PLOTTERQCD=${DIR}plotter_qcd.root
-    ONLYWJETS="--only wjet_step6eta_denominator"
-    ONLYQCD="--only qcd_step2eta_denominator"
+    #ONLYWJETS="--only wjet_step6eta_denominator"
+    #ONLYQCD="--only qcd_step2eta_denominator"
     #ONLYWJETS=' --only "wjet_*" '
     #ONLYQCD=' --only "qcd_*" '
-    #ONLYWJETS=' '
-    #ONLYQCD=' '
+    ONLYWJETS=' '
+    ONLYQCD=' '
     #ONLYWJETS="--only wjet_wjet_eventflow"
     #ONLYQCD="--only qcd_qcd_eventflow"
     PLOTEXT=" --plotExt .png --plotExt .pdf --plotExt .C "
@@ -178,9 +188,27 @@ elif [ "${1}" = "plot" ]; then
     # WJets
     ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIWJETS} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERWJETS} --json ${JSONFILE} --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYWJETS} --key wjet ${DEBUG} ${RUNINBACKGROUND}
     #${PLOTTER} --iEcm 13 --debug --forceMerge --iLumi ${LUMIWJETS} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERWJETS} --json ${JSONFILEWJETS} --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYWJETS} ${RUNINBACKGROUND} 
+
+    # Lessen the burden on the web browser
+    CHAN="wjet"
+    
+    mkdir ${DIR}temp${CHAN}/
+    mv ${DIR}${CHAN}* ${DIR}temp${CHAN}/
+    mv ${DIR}temp${CHAN}/ ${DIR}${CHAN}/
+    cp ~/www/HIG-13-026/index.php ${DIR}${CHAN}/
+    
+
     
     # QCD
     ${PLOTTER} --iEcm 13 ${MERGE} --iLumi ${LUMIQCD} --inDir ${INDIR} --outDir ${DIR} --outFile ${PLOTTERQCD}   --json ${JSONFILE}   --cutflow all_initNorm --no2D --noPowers ${PLOTEXT} ${ONLYQCD} --key qcd ${DEBUG} ${RUNINBACKGROUND}
+
+    # Lessen the burden on the web browser
+    CHAN="qcd"
+
+    mkdir ${DIR}temp${CHAN}/
+    mv ${DIR}${CHAN}* ${DIR}temp${CHAN}/
+    mv ${DIR}temp${CHAN}/ ${DIR}${CHAN}/
+    cp ~/www/HIG-13-026/index.php ${DIR}${CHAN}/
     
     ### DIR="${BASEWEBDIR}_split/"
     ### PLOTTERWJETS=${DIR}plotter_wjet.root
@@ -207,13 +235,13 @@ elif [ "${1}" = "plot" ]; then
     # root -l -b bin/macros/plotFR.C  and sh set.sh. Currently coding this step into runFakeRate.cc
     exit 0
     # Lessen the burden on the web browser
-    for CHAN in qcd wjet
-    do
-        mkdir ${DIR}temp${CHAN}/
-        mv ${DIR}${CHAN}* ${DIR}temp${CHAN}/
-        mv ${DIR}temp${CHAN}/ ${DIR}${CHAN}/
-        cp ~/www/HIG-13-026/index.php ${DIR}${CHAN}/
-    done
+    #for CHAN in qcd wjet
+    #do
+    #    mkdir ${DIR}temp${CHAN}/
+    #    mv ${DIR}${CHAN}* ${DIR}temp${CHAN}/
+    #    mv ${DIR}temp${CHAN}/ ${DIR}${CHAN}/
+    #    cp ~/www/HIG-13-026/index.php ${DIR}${CHAN}/
+    #done
 
 elif [ "${1}" = "crab" ]; then
     COMMAND="${2}"
