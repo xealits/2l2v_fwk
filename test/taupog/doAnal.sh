@@ -68,54 +68,6 @@ elif [ "${1}" = "lumi" ]; then
     tail -n 4 ${OUTDIR}/WJET_LUMI.txt
 
 
-    
-    ###STARTINGJSON="data/cert/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt"
-    ###sed -i -e "s#}{#,#g"  qcd_lumi.json; 
-    ###sed -i -e "s#, ,#,#g" qcd_lumi.json;
-    ###sed -i -e "s#,,#,#g"  qcd_lumi.json;
-    ###sed -i -e "s#,,#,#g"  qcd_lumi.json;
-    ###sed -i -e "s#,,#,#g"  qcd_lumi.json;
-    ###sed -i -e "s#,,#,#g"  qcd_lumi.json;
-    ###sed -i -e "s#,,#,#g"  qcd_lumi.json;
-    ###sed -i -e "s#,,#,#g"  qcd_lumi.json;
-    ###sed -i -e "s#{,#{#g"  qcd_lumi.json;
-    ###sed -i -e "s#{,#{#g"  qcd_lumi.json;
-    ###sed -i -e "s#{ ,#{#g"  qcd_lumi.json;
-    ###
-    ###sed -i -e "s#}{#,#g"  wjet_lumi.json; 
-    ###sed -i -e "s#, ,#,#g" wjet_lumi.json;
-    ###sed -i -e "s#,,#,#g"  wjet_lumi.json;
-    ###sed -i -e "s#,,#,#g"  wjet_lumi.json;
-    ###sed -i -e "s#,,#,#g"  wjet_lumi.json;
-    ###sed -i -e "s#,,#,#g"  wjet_lumi.json;
-    ###sed -i -e "s#,,#,#g"  wjet_lumi.json;
-    ###sed -i -e "s#,,#,#g"  wjet_lumi.json;
-    ###sed -i -e "s#{,#{#g"  wjet_lumi.json;
-    ###sed -i -e "s#{,#{#g"  wjet_lumi.json;
-    ###sed -i -e "s#{ ,#{#g"  wjet_lumi.json;
-    ###
-    ###export PATH=$HOME/.local/bin:/afs/cern.ch/cms/lumi/brilconda-1.0.3/bin:$PATH 
-    ###### Official v1 brilcalc lumi --normtag /afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json -i myjson.json
-    ###brilcalc lumi --normtag ~lumipro/public/normtag_file/OfflineNormtagV2.json  -i wjet_lumi.json
-    ###echo "DONE WJET"
-    ###brilcalc lumi --normtag ~lumipro/public/normtag_file/OfflineNormtagV2.json  -i qcd_lumi.json
-    ###echo "DONE QCD"
-    ###echo "Take care. This uses the offline tag V2, which is not yet blessed by Physics Coordinators https://hypernews.cern.ch/HyperNews/CMS/get/luminosity/544.html "
-    ###echo "To be compared with the output of the full json:"
-    ###echo "brilcalc lumi --normtag ${STARTINGJSON}"
-    ###brilcalc lumi --normtag ~lumipro/public/normtag_file/OfflineNormtagV2.json -i ${STARTINGJSON}
-    ###echo "DONE FULL"
-    ###echo "Take care. This uses the offline tag V2, which is not yet blessed by Physics Coordinators https://hypernews.cern.ch/HyperNews/CMS/get/luminosity/544.html "
-    ###
-    ###exit 0
-    ###JSONFILE=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/data/data_samples.json
-    ###OUTDIR=$CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/test/results_lumi
-    #### cleanup (comment it out if you have smaller jsons for running only on a few sets while the others are OK
-    #### rm -r ${OUTDIR}
-    #### recreate
-    ###mkdir -p ${OUTDIR}
-    ###runAnalysisOverSamples.py -e extractLumiJSON -j ${JSONFILE} -o ${OUTDIR} -d  /dummy/ -c $CMSSW_BASE/src/TauAnalysis/JetToTauFakeRate/test/runAnalysis_cfg.py.templ -p "@useMVA=False @saveSummaryTree=False @runSystematics=False @automaticSwitch=False @is2011=False @jacknife=0 @jacks=0" -s 8nh
-
 elif [ "${1}" = "plot" ]; then
     DIR="${BASEWEBDIR}/"
     mkdir -p ${DIR}
